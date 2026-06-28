@@ -142,6 +142,22 @@
     ]
   },
   {
+    "id": "adc-accordion",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Options",
+        "options": [
+          {
+            "name": "Single Expansion",
+            "value": "single"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "adc-card-carousel",
     "fields": [
       {
@@ -162,6 +178,22 @@
         "name": "source",
         "label": "Contract JSON URL (Optional)",
         "value": ""
+      }
+    ]
+  },
+  {
+    "id": "adc-cta-banner",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Style",
+        "options": [
+          {
+            "name": "Grey Background",
+            "value": "grey"
+          }
+        ]
       }
     ]
   },
@@ -197,6 +229,10 @@
         "value": "jcr:content/root"
       }
     ]
+  },
+  {
+    "id": "adc-tabs",
+    "fields": []
   },
   {
     "id": "adc-video-playlist",

@@ -1,110 +1,117 @@
-function getSourceUrl(block) {
-  const fallback = '/blocks/adc-card-carousel/contract.v1.json';
-  const configured = block.dataset.source || block.getAttribute('data-source');
-  if (configured) return configured;
+function buildCard(cells) {
+  const card = document.createElement('div');
+  card.className = 'adc-carousel-card';
 
-  const link = block.querySelector('a[href]');
-  return link ? link.href : fallback;
+  const img = cells.map((c) => c.querySelector('img')).find(Boolean);
+  if (img) {
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'adc-carousel-card-img';
+    const pic = img.closest('picture') || img;
+    imgWrap.append(pic.cloneNode(true));
+    card.append(imgWrap);
+  }
+
+  const body = document.createElement('div');
+  body.className = 'adc-carousel-card-body';
+
+  const heading = cells.flatMap((c) => [...c.querySelectorAll('h1,h2,h3,h4,h5,h6')])[0];
+  if (heading) {
+    const title = document.createElement('p');
+    title.className = 'adc-carousel-card-title';
+    title.textContent = heading.textContent.trim();
+    body.append(title);
+  }
+
+  const paras = cells.flatMap((c) => [...c.querySelectorAll('p')]).filter(
+    (p) => !p.querySelector('img') && !p.querySelector('a'),
+  );
+  paras.forEach((p) => {
+    const desc = document.createElement('p');
+    desc.className = 'adc-carousel-card-desc';
+    desc.textContent = p.textContent.trim();
+    body.append(desc);
+  });
+
+  const link = cells.flatMap((c) => [...c.querySelectorAll('a')]).find(Boolean);
+  if (link) {
+    const a = link.cloneNode(true);
+    a.className = 'adc-carousel-card-link';
+    body.append(a);
+  }
+
+  card.append(body);
+  return card;
 }
 
-function resolveAssetUrl(url, source) {
-  if (!url) return '';
-  if (/^https?:\/\//i.test(url)) return url;
+function renderCarousel(block, cards) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'adc-carousel-wrapper';
 
-  if (source && /^https?:\/\//i.test(source) && url.startsWith('/')) {
-    try {
-      return `${new URL(source).origin}${url}`;
-    } catch {
-      return url;
-    }
-  }
+  const track = document.createElement('div');
+  track.className = 'adc-carousel-track';
 
-  if (window.EDS_AEM_ORIGIN && url.startsWith('/')) {
-    return `${window.EDS_AEM_ORIGIN}${url}`;
-  }
+  cards.forEach((cardEl) => {
+    const item = document.createElement('div');
+    item.className = 'adc-carousel-item';
+    item.append(cardEl);
+    track.append(item);
+  });
 
-  return url;
-}
+  wrapper.append(track);
 
-async function fetchContractJson(source, componentName) {
-  const response = await fetch(source, { credentials: 'include' });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${componentName} data: ${response.status}`);
-  }
+  const perScreen = parseInt(
+    getComputedStyle(block).getPropertyValue('--cards-per-screen') || '3',
+    10,
+  );
+  const total = cards.length;
+  let current = 0;
 
-  const contentType = response.headers.get('content-type') || '';
-  if (!contentType.toLowerCase().includes('application/json')) {
-    const body = await response.text();
-    const hint = body && body.includes('<')
-      ? 'Non-JSON response (likely login page/CORS/404).'
-      : 'Non-JSON response.';
-    throw new Error(`${hint} URL: ${source}`);
-  }
-
-  return response.json();
-}
-
-function stripHtml(input) {
-  const tmp = document.createElement('div');
-  tmp.innerHTML = input || '';
-  return (tmp.textContent || '').trim();
-}
-
-function normalizeCarouselPayload(payload) {
-  if (Array.isArray(payload.items)) {
-    return {
-      cardsPerScreen: Number(payload.cardsPerScreen || 1),
-      items: payload.items,
-    };
-  }
-
-  const itemsOrder = Array.isArray(payload[':itemsOrder']) ? payload[':itemsOrder'] : [];
-  const itemsMap = payload[':items'] || {};
-
-  const items = itemsOrder
-    .map((key) => itemsMap[key])
-    .filter(Boolean)
-    .map((item) => ({
-      title: stripHtml(item['jcr:title'] || item['cq:panelTitle'] || ''),
-      description: stripHtml(item['jcr:description'] || ''),
-      image: null,
-      link: null,
-    }));
-
-  return {
-    cardsPerScreen: Number(payload.cardsPerScreen || 1),
-    items,
+  const goTo = (idx) => {
+    current = Math.max(0, Math.min(idx, total - perScreen));
+    track.style.transform = `translateX(-${(current / total) * 100}%)`;
+    block.querySelectorAll('.adc-carousel-dot').forEach((d, i) => {
+      d.classList.toggle('adc-carousel-dot-active', i === current);
+    });
   };
-}
 
-function renderSlide(item, source) {
-  if (!item) return '';
-  const imageSrc = item.image ? resolveAssetUrl(item.image.src || '', source) : '';
+  const prev = document.createElement('button');
+  prev.className = 'adc-carousel-btn adc-carousel-btn-prev';
+  prev.type = 'button';
+  prev.setAttribute('aria-label', 'Previous');
+  prev.innerHTML = '&#8249;';
+  prev.addEventListener('click', () => goTo(current - 1));
 
-  return `
-    <li class="adc-card-carousel-slide">
-      ${imageSrc ? `<img src="${imageSrc}" alt="${item.image.alt || ''}" loading="lazy">` : ''}
-      ${item.title ? `<h3>${item.title}</h3>` : ''}
-      ${item.description ? `<p>${item.description}</p>` : ''}
-      ${item.link && item.link.href ? `<a class="button" href="${item.link.href}">${item.link.label || 'Learn more'}</a>` : ''}
-    </li>
-  `;
-}
+  const next = document.createElement('button');
+  next.className = 'adc-carousel-btn adc-carousel-btn-next';
+  next.type = 'button';
+  next.setAttribute('aria-label', 'Next');
+  next.innerHTML = '&#8250;';
+  next.addEventListener('click', () => goTo(current + 1));
 
-export default async function decorate(block) {
-  const source = getSourceUrl(block);
-  if (!source) {
-    block.innerHTML = '<p>Card carousel source is not configured.</p>';
-    return;
+  const dots = document.createElement('div');
+  dots.className = 'adc-carousel-dots';
+
+  for (let i = 0; i < total; i += 1) {
+    const dot = document.createElement('button');
+    dot.className = `adc-carousel-dot${i === 0 ? ' adc-carousel-dot-active' : ''}`;
+    dot.type = 'button';
+    dot.setAttribute('aria-label', `Go to card ${i + 1}`);
+    dot.addEventListener('click', () => goTo(i));
+    dots.append(dot);
   }
 
-  try {
-    const payload = await fetchContractJson(source, 'card carousel');
-    const normalized = normalizeCarouselPayload(payload);
-    const { cardsPerScreen, items } = normalized;
+  block.textContent = '';
+  block.append(prev, wrapper, next, dots);
+}
 
-    block.innerHTML = `<ul class="adc-card-carousel-track" style="--cards-per-screen:${cardsPerScreen}">${items.map((item) => renderSlide(item, source)).join('')}</ul>`;
-  } catch (error) {
-    block.innerHTML = `<p>${error.message}</p>`;
-  }
+export default function decorate(block) {
+  const rows = [...block.querySelectorAll(':scope > div')];
+  if (!rows.length) return;
+
+  const cards = rows.map((row) => {
+    const cells = [...row.querySelectorAll(':scope > div')];
+    return buildCard(cells);
+  });
+
+  renderCarousel(block, cards);
 }

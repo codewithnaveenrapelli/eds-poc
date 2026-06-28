@@ -49,9 +49,13 @@
         "title",
         "hero",
         "cards",
+        "fragment",
+        "columns",
+        "adc-accordion",
+        "adc-tabs",
+        "adc-cta-banner",
         "adc-card-carousel",
-        "adc-video-playlist",
-        "columns"
+        "adc-video-playlist"
       ]
     }
   ]
