@@ -7,8 +7,21 @@ function extractImage(imageCell, altText) {
   }
   const img = imageCell.querySelector('img');
   if (img) { if (altText) img.alt = altText; return img; }
+  const a = imageCell.querySelector('a');
+  if (a) {
+    const imgInA = a.querySelector('img');
+    if (imgInA) { if (altText) imgInA.alt = altText; return imgInA; }
+    const href = a.getAttribute('href') || '';
+    if (href && (href.startsWith('/') || href.startsWith('http') || href.startsWith('//'))) {
+      const el = document.createElement('img');
+      el.src = href;
+      el.alt = altText || '';
+      el.loading = 'lazy';
+      return el;
+    }
+  }
   const src = imageCell.textContent.trim();
-  if (src && (src.startsWith('/') || src.startsWith('http'))) {
+  if (src && (src.startsWith('/') || src.startsWith('http') || src.startsWith('//'))) {
     const el = document.createElement('img');
     el.src = src;
     el.alt = altText || '';
@@ -21,9 +34,11 @@ function extractImage(imageCell, altText) {
 function isConfigRow(row) {
   const cells = [...row.querySelectorAll(':scope > div')];
   if (cells.length !== 1) return false;
-  const text = cells[0].textContent.trim();
-  if (cells[0].querySelector('picture, img')) return false;
-  if (text.startsWith('/') || text.startsWith('http')) return false;
+  const c = cells[0];
+  if (c.querySelector('picture, img')) return false;
+  if (c.querySelector('a[href]')) return false;
+  const text = c.textContent.trim();
+  if (text.startsWith('/') || text.startsWith('http') || text.startsWith('//')) return false;
   return true;
 }
 

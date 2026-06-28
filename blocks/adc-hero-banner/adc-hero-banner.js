@@ -20,8 +20,21 @@ function extractImage(imageCell, altText) {
   }
   const img = imageCell.querySelector('img');
   if (img) { if (altText) img.alt = altText; return img; }
+  const a = imageCell.querySelector('a');
+  if (a) {
+    const imgInA = a.querySelector('img');
+    if (imgInA) { if (altText) imgInA.alt = altText; return imgInA; }
+    const href = a.getAttribute('href') || '';
+    if (href && (href.startsWith('/') || href.startsWith('http') || href.startsWith('//'))) {
+      const el = document.createElement('img');
+      el.src = href;
+      el.alt = altText || '';
+      el.loading = 'lazy';
+      return el;
+    }
+  }
   const src = imageCell.textContent.trim();
-  if (src && (src.startsWith('/') || src.startsWith('http'))) {
+  if (src && (src.startsWith('/') || src.startsWith('http') || src.startsWith('//'))) {
     const el = document.createElement('img');
     el.src = src;
     el.alt = altText || '';

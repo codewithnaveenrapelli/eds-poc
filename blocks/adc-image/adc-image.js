@@ -10,15 +10,24 @@ function extractImage(imageCell, altText) {
   }
   let img = imageCell.querySelector('img');
   if (img) { if (altText) img.alt = altText; return img; }
-  // Case 2: anchor wrapping an image
+  // Case 2: anchor wrapping an image (or Remote Asset link)
   const aImg = imageCell.querySelector('a');
   if (aImg) {
     img = aImg.querySelector('img');
     if (img) { if (altText) img.alt = altText; return img; }
+    // Remote Asset: anchor with URL in href, display text is not the URL
+    const href = aImg.getAttribute('href') || '';
+    if (href && (href.startsWith('/') || href.startsWith('http') || href.startsWith('//'))) {
+      const el = document.createElement('img');
+      el.src = href;
+      el.alt = altText || '';
+      el.loading = 'lazy';
+      return el;
+    }
   }
   // Case 3: reference stored as URL/path text
   const src = imageCell.textContent.trim();
-  if (src && (src.startsWith('/') || src.startsWith('http'))) {
+  if (src && (src.startsWith('/') || src.startsWith('http') || src.startsWith('//'))) {
     const el = document.createElement('img');
     el.src = src;
     el.alt = altText || '';
