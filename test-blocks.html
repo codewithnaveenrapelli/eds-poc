@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADC Blocks Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; background: #f5f5f5; }
+        .test-section { margin: 2rem 0; padding: 1rem; border: 1px solid #ccc; background: white; }
+        .test-section h2 { color: #0055cc; margin: 0 0 1rem 0; }
+        .block { min-height: 100px; background: #fafafa; border: 1px dashed #999; padding: 1rem; }
+        .error { color: red; font-weight: bold; }
+        .success { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>ADC Blocks Test Page</h1>
+        
+        <div class="test-section">
+            <h2>Hero Banner Block (Direct EDS Content)</h2>
+            <div class="adc-hero-banner block" data-mode="direct">
+                <div>
+                    <picture>
+                        <source media="(max-width: 767px)" srcset="https://picsum.photos/seed/adc-hero-mobile/800/560">
+                        <source media="(max-width: 1024px)" srcset="https://picsum.photos/seed/adc-hero-tablet/1200/700">
+                        <img src="https://picsum.photos/seed/adc-hero-desktop/1600/760" alt="Direct EDS Hero Banner" loading="lazy">
+                    </picture>
+                </div>
+                <div>
+                    <p class="adc-hero-banner-eyebrow">Direct EDS Authoring</p>
+                    <h2>Hero Banner Converted Directly to EDS Block</h2>
+                    <p>This hero section is rendered from authored block content without calling a backend JSON endpoint.</p>
+                    <a href="https://www.abbott.com" target="_blank" rel="noopener noreferrer">Primary CTA</a>
+                    <a href="/content/adc/us/en/home.html">Secondary CTA</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Cards Block (Direct EDS Content)</h2>
+            <div class="adc-cards block">
+                <div>
+                    <div><img src="https://picsum.photos/seed/adc-card-1/800/420" alt="Card image 1"></div>
+                    <div><img src="https://picsum.photos/seed/adc-logo-1/180/48" alt="Card logo 1"></div>
+                    <div>Patient support</div>
+                    <div>Living with diabetes resources</div>
+                    <div>Guidance and practical tools for people recently diagnosed with diabetes.</div>
+                    <div><a href="https://www.abbott.com" target="_blank" rel="noopener noreferrer">Learn more</a></div>
+                </div>
+                <div>
+                    <div><img src="https://picsum.photos/seed/adc-card-2/800/420" alt="Card image 2"></div>
+                    <div><img src="https://picsum.photos/seed/adc-logo-2/180/48" alt="Card logo 2"></div>
+                    <div>Community stories</div>
+                    <div>Real patient journeys</div>
+                    <div>Explore stories from people managing glucose insights in everyday life.</div>
+                    <div><a href="/content/adc/us/en/home.html">Read stories</a></div>
+                </div>
+                <div>
+                    <div><img src="https://picsum.photos/seed/adc-card-3/800/420" alt="Card image 3"></div>
+                    <div><img src="https://picsum.photos/seed/adc-logo-3/180/48" alt="Card logo 3"></div>
+                    <div>Caregiver tools</div>
+                    <div>Support for families and caregivers</div>
+                    <div>Helpful planning resources and education for caregivers supporting treatment.</div>
+                    <div><a href="https://www.abbott.com/corpnewsroom.html" target="_blank" rel="noopener noreferrer">See resources</a></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Card Carousel Block (Sling Model Exporter)</h2>
+            <div class="adc-card-carousel block" data-source="http://localhost:4502/content/adc/webu/global-reference/components/card-carousel/jcr:content/root/cardcarousel_copy.model.json"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Video Playlist Block (Authored Exporter Endpoint)</h2>
+            <div class="adc-video-playlist block" data-source="http://localhost:4502/content/adc/webu/global-reference/components/video-playlist/jcr:content/root/videoplaylist.model.json"></div>
+        </div>
+    </main>
+    
+    <script>
+        // Load block scripts dynamically
+        const blockScripts = [
+            '/blocks/adc-hero-banner/adc-hero-banner.js',
+            '/blocks/adc-cards/adc-cards.js',
+            '/blocks/adc-card-carousel/adc-card-carousel.js',
+            '/blocks/adc-video-playlist/adc-video-playlist.js'
+        ];
+        
+        blockScripts.forEach(script => {
+            const el = document.createElement('script');
+            el.type = 'module';
+            el.src = script;
+            document.head.appendChild(el);
+        });
+        
+        // Load main scripts
+        const mainScript = document.createElement('script');
+        mainScript.src = '/scripts/scripts.js';
+        document.head.appendChild(mainScript);
+        
+        // Wait for scripts then manually decorate blocks
+        setTimeout(async () => {
+            const blocks = document.querySelectorAll('.adc-hero-banner, .adc-cards, .adc-card-carousel, .adc-video-playlist');
+            
+            for (const block of blocks) {
+                const blockName = block.className.split(' ')[0];
+                
+                try {
+                    // Load CSS
+                    const cssPath = `/blocks/${blockName}/${blockName}.css`;
+                    const cssLink = document.createElement('link');
+                    cssLink.rel = 'stylesheet';
+                    cssLink.href = cssPath;
+                    document.head.appendChild(cssLink);
+                    
+                    // Load and execute JS module
+                    const jsPath = `/blocks/${blockName}/${blockName}.js`;
+                    const mod = await import(jsPath);
+                    
+                    if (mod.default && typeof mod.default === 'function') {
+                        await mod.default(block);
+                    }
+                } catch (error) {
+                    // Keep minimal signal in browser console without cluttering UI.
+                    // eslint-disable-next-line no-console
+                    console.error(`Error decorating ${blockName}:`, error);
+                }
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
