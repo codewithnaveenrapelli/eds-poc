@@ -9,8 +9,7 @@
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
               "name": "ADC Hero Banner",
-              "model": "adc-hero-banner",
-              "key-value": true
+              "model": "adc-hero-banner"
             }
           }
         }
@@ -36,60 +35,23 @@
           "value": ""
         },
         {
-          "component": "text",
-          "valueType": "string",
-          "name": "title",
-          "label": "Headline",
-          "value": ""
-        },
-        {
-          "component": "richtext",
-          "valueType": "string",
-          "name": "description",
-          "label": "Description / Subtext",
-          "value": ""
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "cta1Label",
-          "label": "Primary CTA Label",
-          "value": ""
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "cta1Url",
-          "label": "Primary CTA URL",
-          "value": ""
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "cta2Label",
-          "label": "Secondary CTA Label",
-          "value": ""
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "cta2Url",
-          "label": "Secondary CTA URL",
-          "value": ""
-        },
-        {
           "component": "select",
           "valueType": "string",
           "name": "variant",
-          "label": "Layout Variant",
+          "label": "Layout",
           "options": [
-            { "name": "Left Content", "value": "left" },
-            { "name": "Center Content", "value": "center" },
-            { "name": "Right Content", "value": "right" }
+            { "name": "Text Left", "value": "left" },
+            { "name": "Text Centre", "value": "center" },
+            { "name": "Text Right", "value": "right" }
           ]
         }
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "adc-hero-banner",
+      "components": ["adc-hero-text", "adc-button"]
+    }
+  ]
 }

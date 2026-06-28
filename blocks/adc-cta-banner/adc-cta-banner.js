@@ -1,64 +1,76 @@
-function buildData(block) {
-  const data = {};
-  block.querySelectorAll(':scope > div').forEach((row) => {
-    const cells = [...row.querySelectorAll(':scope > div')];
-    if (cells.length === 2) {
-      const [keyCell, valCell] = cells;
-      const key = keyCell.textContent.trim().toLowerCase();
-      data[key] = valCell;
-    }
-  });
-  return data;
-}
+// adc-cta-banner is a CONTAINER block.
+// Config row (1 cell): variant
+// adc-hero-text child (2 cells): richtext content + type (title/description)
+// adc-button child (4 cells): label + url + variant + newTab
+
+const CTA_VARIANTS = ['yellow', 'grey', 'dark'];
 
 export default function decorate(block) {
-  const data = buildData(block);
-  const variant = data.variant?.textContent.trim() || 'yellow';
-  block.classList.add(`variant-${variant}`);
+  const allRows = [...block.querySelectorAll(':scope > div')];
+
+  let variant = 'yellow';
+  const textItems = [];
+  const ctaItems = [];
+
+  allRows.forEach((row) => {
+    const cells = [...row.querySelectorAll(':scope > div')];
+
+    if (cells.length === 1) {
+      const text = cells[0].textContent.trim().toLowerCase();
+      if (CTA_VARIANTS.includes(text)) variant = text;
+    } else if (cells.length === 2) {
+      const [contentCell, typeCell] = cells;
+      const type = typeCell.textContent.trim().toLowerCase() || 'description';
+      textItems.push({
+        content: contentCell, type,
+      });
+    } else if (cells.length >= 3) {
+      const [labelCell, urlCell] = cells;
+      const label = labelCell.textContent.trim();
+      const url = urlCell.textContent.trim();
+      const btnVariant = cells[2]?.textContent.trim() || 'primary';
+      const newTab = cells[3]?.textContent.trim() === 'true';
+      if (label && url) {
+        ctaItems.push({
+          label, url, variant: btnVariant, newTab,
+        });
+      }
+    }
+  });
+
+  block.classList.add(variant);
   block.textContent = '';
 
-  const container = document.createElement('div');
-  container.className = 'adc-cta-banner-container';
+  const inner = document.createElement('div');
+  inner.className = 'adc-cta-banner-container';
 
-  if (data.title?.innerHTML.trim()) {
-    const h = document.createElement('div');
-    h.className = 'adc-cta-banner-title';
-    h.innerHTML = data.title.innerHTML;
-    container.append(h);
-  }
+  textItems.forEach(({ content, type }) => {
+    if (type === 'title') {
+      const h = document.createElement('h2');
+      h.className = 'adc-cta-banner-title';
+      h.innerHTML = content.innerHTML;
+      inner.append(h);
+    } else {
+      const p = document.createElement('p');
+      p.className = 'adc-cta-banner-desc';
+      p.innerHTML = content.innerHTML;
+      inner.append(p);
+    }
+  });
 
-  if (data.description?.innerHTML.trim()) {
-    const d = document.createElement('div');
-    d.className = 'adc-cta-banner-desc';
-    d.innerHTML = data.description.innerHTML;
-    container.append(d);
-  }
-
-  const cta1Label = data.cta1label?.textContent.trim();
-  const cta1Url = data.cta1url?.textContent.trim();
-  const cta2Label = data.cta2label?.textContent.trim();
-  const cta2Url = data.cta2url?.textContent.trim();
-  const hasCta = (cta1Label && cta1Url) || (cta2Label && cta2Url);
-
-  if (hasCta) {
+  if (ctaItems.length) {
     const btns = document.createElement('div');
     btns.className = 'adc-cta-banner-buttons';
-    if (cta1Label && cta1Url) {
+    ctaItems.forEach(({ label, url, newTab }) => {
       const a = document.createElement('a');
-      a.href = cta1Url;
-      a.textContent = cta1Label;
-      a.className = 'adc-cta-banner-btn adc-cta-banner-btn-primary';
+      a.href = url;
+      a.className = 'adc-cta-banner-btn';
+      a.textContent = label;
+      if (newTab) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
       btns.append(a);
-    }
-    if (cta2Label && cta2Url) {
-      const a = document.createElement('a');
-      a.href = cta2Url;
-      a.textContent = cta2Label;
-      a.className = 'adc-cta-banner-btn adc-cta-banner-btn-secondary';
-      btns.append(a);
-    }
-    container.append(btns);
+    });
+    inner.append(btns);
   }
 
-  block.append(container);
+  block.append(inner);
 }

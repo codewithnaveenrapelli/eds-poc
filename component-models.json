@@ -336,55 +336,13 @@
     "id": "adc-cta-banner",
     "fields": [
       {
-        "component": "text",
-        "valueType": "string",
-        "name": "title",
-        "label": "Headline",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "description",
-        "label": "Description",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta1Label",
-        "label": "Primary Button Label",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta1Url",
-        "label": "Primary Button URL",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta2Label",
-        "label": "Secondary Button Label (optional)",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta2Url",
-        "label": "Secondary Button URL (optional)",
-        "value": ""
-      },
-      {
         "component": "select",
         "valueType": "string",
         "name": "variant",
-        "label": "Background Style",
+        "label": "Style",
         "options": [
           {
-            "name": "Yellow",
+            "name": "Yellow (default)",
             "value": "yellow"
           },
           {
@@ -392,12 +350,8 @@
             "value": "grey"
           },
           {
-            "name": "Blue",
-            "value": "blue"
-          },
-          {
-            "name": "White",
-            "value": "white"
+            "name": "Dark",
+            "value": "dark"
           }
         ]
       }
@@ -421,64 +375,54 @@
         "value": ""
       },
       {
-        "component": "text",
+        "component": "select",
         "valueType": "string",
-        "name": "title",
-        "label": "Headline",
-        "value": ""
-      },
+        "name": "variant",
+        "label": "Layout",
+        "options": [
+          {
+            "name": "Text Left",
+            "value": "left"
+          },
+          {
+            "name": "Text Centre",
+            "value": "center"
+          },
+          {
+            "name": "Text Right",
+            "value": "right"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "adc-hero-text",
+    "fields": [
       {
         "component": "richtext",
         "valueType": "string",
-        "name": "description",
-        "label": "Description / Subtext",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta1Label",
-        "label": "Primary CTA Label",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta1Url",
-        "label": "Primary CTA URL",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta2Label",
-        "label": "Secondary CTA Label",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "cta2Url",
-        "label": "Secondary CTA URL",
+        "name": "text",
+        "label": "Content",
         "value": ""
       },
       {
         "component": "select",
         "valueType": "string",
-        "name": "variant",
-        "label": "Layout Variant",
+        "name": "type",
+        "label": "Text Type",
         "options": [
           {
-            "name": "Left Content",
-            "value": "left"
+            "name": "Title (H2)",
+            "value": "title"
           },
           {
-            "name": "Center Content",
-            "value": "center"
+            "name": "Tagline / Eyebrow",
+            "value": "tagline"
           },
           {
-            "name": "Right Content",
-            "value": "right"
+            "name": "Description",
+            "value": "description"
           }
         ]
       }

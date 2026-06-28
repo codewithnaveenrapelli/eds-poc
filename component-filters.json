@@ -46,6 +46,20 @@
     ]
   },
   {
+    "id": "adc-cta-banner",
+    "components": [
+      "adc-hero-text",
+      "adc-button"
+    ]
+  },
+  {
+    "id": "adc-hero-banner",
+    "components": [
+      "adc-hero-text",
+      "adc-button"
+    ]
+  },
+  {
     "id": "adc-tabs",
     "components": [
       "adc-tabs-item"

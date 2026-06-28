@@ -9,8 +9,7 @@
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
               "name": "ADC CTA Banner",
-              "model": "adc-cta-banner",
-              "key-value": true
+              "model": "adc-cta-banner"
             }
           }
         }
@@ -22,61 +21,23 @@
       "id": "adc-cta-banner",
       "fields": [
         {
-          "component": "text",
-          "valueType": "string",
-          "name": "title",
-          "label": "Headline",
-          "value": ""
-        },
-        {
-          "component": "richtext",
-          "valueType": "string",
-          "name": "description",
-          "label": "Description",
-          "value": ""
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "cta1Label",
-          "label": "Primary Button Label",
-          "value": ""
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "cta1Url",
-          "label": "Primary Button URL",
-          "value": ""
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "cta2Label",
-          "label": "Secondary Button Label (optional)",
-          "value": ""
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "cta2Url",
-          "label": "Secondary Button URL (optional)",
-          "value": ""
-        },
-        {
           "component": "select",
           "valueType": "string",
           "name": "variant",
-          "label": "Background Style",
+          "label": "Style",
           "options": [
-            { "name": "Yellow", "value": "yellow" },
+            { "name": "Yellow (default)", "value": "yellow" },
             { "name": "Grey", "value": "grey" },
-            { "name": "Blue", "value": "blue" },
-            { "name": "White", "value": "white" }
+            { "name": "Dark", "value": "dark" }
           ]
         }
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "adc-cta-banner",
+      "components": ["adc-hero-text", "adc-button"]
+    }
+  ]
 }

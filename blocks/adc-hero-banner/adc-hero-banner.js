@@ -1,15 +1,9 @@
-function buildData(block) {
-  const data = {};
-  block.querySelectorAll(':scope > div').forEach((row) => {
-    const cells = [...row.querySelectorAll(':scope > div')];
-    if (cells.length === 2) {
-      const [keyCell, valCell] = cells;
-      const key = keyCell.textContent.trim().toLowerCase();
-      data[key] = valCell;
-    }
-  });
-  return data;
-}
+// adc-hero-banner is a CONTAINER block.
+// Config rows (1 cell): image, imageAlt, variant
+// adc-hero-text child (2 cells): richtext content + type (title/tagline/description)
+// adc-button child (4 cells): label + url + variant + newTab
+
+const LAYOUT_VARIANTS = ['left', 'center', 'right'];
 
 function extractImage(imageCell, altText) {
   if (!imageCell) return null;
@@ -44,63 +38,111 @@ function extractImage(imageCell, altText) {
   return null;
 }
 
-export default function decorate(block) {
-  const variant = [...block.classList]
-    .find((c) => ['left', 'center', 'right'].includes(c)) || 'left';
-  const data = buildData(block);
-  block.textContent = '';
-  block.classList.add(`variant-${variant}`);
+function hasImageContent(cell) {
+  return !!(cell.querySelector('picture, img') || cell.querySelector('a[href]'));
+}
 
-  const altText = data.imagealt?.textContent.trim() || '';
-  const picEl = extractImage(data.image, altText);
+export default function decorate(block) {
+  const allRows = [...block.querySelectorAll(':scope > div')];
+
+  let bgImageCell = null;
+  let imageAlt = '';
+  let variant = 'left';
+  const textItems = [];
+  const ctaItems = [];
+
+  allRows.forEach((row) => {
+    const cells = [...row.querySelectorAll(':scope > div')];
+
+    if (cells.length === 1) {
+      // Config row — image, imageAlt, or variant
+      const [firstCell] = cells;
+      if (hasImageContent(firstCell)) {
+        bgImageCell = firstCell;
+      } else {
+        const text = firstCell.textContent.trim();
+        if (LAYOUT_VARIANTS.includes(text.toLowerCase())) {
+          variant = text.toLowerCase();
+        } else {
+          imageAlt = text;
+        }
+      }
+    } else if (cells.length === 2) {
+      // adc-hero-text child: cells[0]=content (richtext), cells[1]=type
+      const [contentCell, typeCell] = cells;
+      const type = typeCell.textContent.trim().toLowerCase() || 'description';
+      textItems.push({
+        content: contentCell, type,
+      });
+    } else if (cells.length >= 3) {
+      // adc-button child: cells[0]=label, cells[1]=url, cells[2]=variant, cells[3]=newTab
+      const [labelCell, urlCell] = cells;
+      const label = labelCell.textContent.trim();
+      const url = urlCell.textContent.trim();
+      const btnVariant = cells[2]?.textContent.trim() || 'primary';
+      const newTab = cells[3]?.textContent.trim() === 'true';
+      if (label && url) {
+        ctaItems.push({
+          label, url, variant: btnVariant, newTab,
+        });
+      }
+    }
+  });
+
+  block.classList.add(`variant-${variant}`);
+  block.textContent = '';
+
+  // Background image
+  const picEl = extractImage(bgImageCell, imageAlt);
   if (picEl) {
     const media = document.createElement('div');
     media.className = 'adc-hero-banner-media';
-    const imgNode = picEl.closest ? (picEl.closest('picture') || picEl) : picEl;
+    const imgNode = (picEl.closest && picEl.closest('picture')) || picEl;
     media.append(imgNode);
     block.append(media);
   }
 
+  // Content area
   const content = document.createElement('div');
   content.className = 'adc-hero-banner-content';
 
-  if (data.title?.textContent.trim()) {
-    const h = document.createElement('h1');
-    h.className = 'adc-hero-banner-title';
-    h.innerHTML = data.title.innerHTML;
-    content.append(h);
-  }
+  textItems.forEach(({ content: el, type }) => {
+    if (type === 'title') {
+      const h = document.createElement('h2');
+      h.className = 'adc-hero-banner-title';
+      h.innerHTML = el.innerHTML;
+      content.append(h);
+    } else if (type === 'tagline') {
+      const p = document.createElement('p');
+      p.className = 'adc-hero-banner-eyebrow';
+      p.innerHTML = el.innerHTML;
+      content.append(p);
+    } else {
+      const p = document.createElement('p');
+      p.className = 'adc-hero-banner-desc';
+      p.innerHTML = el.innerHTML;
+      content.append(p);
+    }
+  });
 
-  if (data.description?.innerHTML?.trim()) {
-    const d = document.createElement('div');
-    d.className = 'adc-hero-banner-desc';
-    d.innerHTML = data.description.innerHTML;
-    content.append(d);
-  }
-
-  const cta1Label = data.cta1label?.textContent.trim();
-  const cta1Url = data.cta1url?.textContent.trim();
-  const cta2Label = data.cta2label?.textContent.trim();
-  const cta2Url = data.cta2url?.textContent.trim();
-  const hasCta = (cta1Label && cta1Url) || (cta2Label && cta2Url);
-
-  if (hasCta) {
+  if (ctaItems.length) {
     const actions = document.createElement('div');
     actions.className = 'adc-hero-banner-actions';
-    if (cta1Label && cta1Url) {
+    ctaItems.forEach((
+      {
+        label, url, variant: bv, newTab,
+      },
+    ) => {
       const a = document.createElement('a');
-      a.href = cta1Url;
-      a.textContent = cta1Label;
-      a.className = 'adc-hero-banner-btn-primary';
+      a.href = url;
+      a.className = `adc-hero-banner-btn adc-hero-banner-btn-${bv}`;
+      a.textContent = label;
+      if (newTab) {
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+      }
       actions.append(a);
-    }
-    if (cta2Label && cta2Url) {
-      const a = document.createElement('a');
-      a.href = cta2Url;
-      a.textContent = cta2Label;
-      a.className = 'adc-hero-banner-btn-secondary';
-      actions.append(a);
-    }
+    });
     content.append(actions);
   }
 
