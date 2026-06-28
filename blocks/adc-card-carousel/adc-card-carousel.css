@@ -4,6 +4,7 @@
 
 .adc-card-carousel .adc-card-carousel-track {
   --cards-per-screen: 1;
+
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: calc((100% - (var(--cards-per-screen) - 1) * 1rem) / var(--cards-per-screen));

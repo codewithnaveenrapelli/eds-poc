@@ -37,7 +37,7 @@
   opacity: 0.75;
 }
 
-@media (min-width: 900px) {
+@media (width >= 900px) {
   .adc-cards .adc-cards-list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
