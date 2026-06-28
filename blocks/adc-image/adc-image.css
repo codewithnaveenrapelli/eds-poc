@@ -1,0 +1,32 @@
+.adc-image {
+  margin: 0;
+}
+
+.adc-image .adc-image-wrap img,
+.adc-image .adc-image-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.adc-image .adc-image-caption {
+  font-size: 0.875rem;
+  color: #6b6b6b;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.adc-image.size-large {
+  max-width: 75%;
+  margin: 0 auto;
+}
+
+.adc-image.size-medium {
+  max-width: 50%;
+  margin: 0 auto;
+}
+
+.adc-image.size-small {
+  max-width: 25%;
+  margin: 0 auto;
+}

@@ -142,6 +142,25 @@
     ]
   },
   {
+    "id": "adc-accordion-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Accordion Header / Question",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "content",
+        "label": "Expanded Content / Answer",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "adc-accordion",
     "fields": [
       {
@@ -150,10 +169,55 @@
         "label": "Options",
         "options": [
           {
-            "name": "Single Expansion",
+            "name": "Single Expansion (only one open at a time)",
             "value": "single"
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "adc-button",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "label",
+        "label": "Button Label",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "url",
+        "label": "Target URL",
+        "value": ""
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "variant",
+        "label": "Button Style",
+        "options": [
+          {
+            "name": "Primary (Blue filled)",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary (Outline)",
+            "value": "secondary"
+          },
+          {
+            "name": "Ghost (Text link)",
+            "value": "ghost"
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "name": "openInNewTab",
+        "label": "Open in New Tab",
+        "value": false
       }
     ]
   },
@@ -163,9 +227,76 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "source",
-        "label": "Contract JSON URL",
-        "value": "/content/adc/webu/global-reference/components/card-carousel/jcr:content/root/cardcarousel_copy.eds-v1.json"
+        "name": "title",
+        "label": "Section Title (optional)",
+        "value": ""
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "cardsPerScreen",
+        "label": "Cards Visible at Once",
+        "options": [
+          {
+            "name": "2 cards",
+            "value": "2"
+          },
+          {
+            "name": "3 cards",
+            "value": "3"
+          },
+          {
+            "name": "4 cards",
+            "value": "4"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "adc-card-item",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Card Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Card Title",
+        "value": ""
+      },
+      {
+        "component": "textarea",
+        "valueType": "string",
+        "name": "description",
+        "label": "Card Description",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "cta_label",
+        "label": "Link / Button Text",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "cta_url",
+        "label": "Link URL",
+        "value": ""
       }
     ]
   },
@@ -175,9 +306,29 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "source",
-        "label": "Contract JSON URL (Optional)",
+        "name": "title",
+        "label": "Section Title (optional)",
         "value": ""
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "columns",
+        "label": "Columns per row",
+        "options": [
+          {
+            "name": "2 columns",
+            "value": "2"
+          },
+          {
+            "name": "3 columns",
+            "value": "3"
+          },
+          {
+            "name": "4 columns",
+            "value": "4"
+          }
+        ]
       }
     ]
   },
@@ -185,13 +336,68 @@
     "id": "adc-cta-banner",
     "fields": [
       {
-        "component": "multiselect",
-        "name": "classes",
-        "label": "Style",
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Headline",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "description",
+        "label": "Description",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "cta1Label",
+        "label": "Primary Button Label",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "cta1Url",
+        "label": "Primary Button URL",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "cta2Label",
+        "label": "Secondary Button Label (optional)",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "cta2Url",
+        "label": "Secondary Button URL (optional)",
+        "value": ""
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "variant",
+        "label": "Background Style",
         "options": [
           {
-            "name": "Grey Background",
+            "name": "Yellow",
+            "value": "yellow"
+          },
+          {
+            "name": "Grey",
             "value": "grey"
+          },
+          {
+            "name": "Blue",
+            "value": "blue"
+          },
+          {
+            "name": "White",
+            "value": "white"
           }
         ]
       }
@@ -201,38 +407,183 @@
     "id": "adc-hero-banner",
     "fields": [
       {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Background Image",
+        "multi": false
+      },
+      {
         "component": "text",
         "valueType": "string",
-        "name": "source",
-        "label": "Contract JSON URL (Optional Override)",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
         "value": ""
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "componentPath",
-        "label": "AEM Component Resource Path (Optional)",
+        "name": "title",
+        "label": "Headline",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "description",
+        "label": "Description / Subtext",
         "value": ""
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "componentNode",
-        "label": "Component Node Name",
-        "value": "herobanner"
+        "name": "cta1Label",
+        "label": "Primary CTA Label",
+        "value": ""
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "componentRoot",
-        "label": "Component Root Path",
-        "value": "jcr:content/root"
+        "name": "cta1Url",
+        "label": "Primary CTA URL",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "cta2Label",
+        "label": "Secondary CTA Label",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "cta2Url",
+        "label": "Secondary CTA URL",
+        "value": ""
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "variant",
+        "label": "Layout Variant",
+        "options": [
+          {
+            "name": "Left Content",
+            "value": "left"
+          },
+          {
+            "name": "Center Content",
+            "value": "center"
+          },
+          {
+            "name": "Right Content",
+            "value": "right"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "adc-image",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Alt Text",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "caption",
+        "label": "Caption (optional)",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "linkUrl",
+        "label": "Link URL (optional)",
+        "value": ""
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "size",
+        "label": "Display Size",
+        "options": [
+          {
+            "name": "Full Width",
+            "value": "full"
+          },
+          {
+            "name": "Large (75%)",
+            "value": "large"
+          },
+          {
+            "name": "Medium (50%)",
+            "value": "medium"
+          },
+          {
+            "name": "Small (25%)",
+            "value": "small"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "adc-tabs-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Tab Label",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "content",
+        "label": "Tab Content",
+        "value": ""
       }
     ]
   },
   {
     "id": "adc-tabs",
-    "fields": []
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "variant",
+        "label": "Tab Style",
+        "options": [
+          {
+            "name": "Underline (default)",
+            "value": "underline"
+          },
+          {
+            "name": "Pill",
+            "value": "pill"
+          },
+          {
+            "name": "Boxed",
+            "value": "boxed"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "adc-video-playlist",

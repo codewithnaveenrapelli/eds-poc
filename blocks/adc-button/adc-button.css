@@ -1,0 +1,48 @@
+.adc-button {
+  display: inline-block;
+}
+
+.adc-button .adc-button-link {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 2rem;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.adc-button .adc-button-link-primary {
+  background: #006eb6;
+  color: #fff;
+  border: 2px solid #006eb6;
+}
+
+.adc-button .adc-button-link-primary:hover {
+  background: #00507e;
+  border-color: #00507e;
+}
+
+.adc-button .adc-button-link-secondary {
+  background: transparent;
+  color: #006eb6;
+  border: 2px solid #006eb6;
+}
+
+.adc-button .adc-button-link-secondary:hover {
+  background: #006eb6;
+  color: #fff;
+}
+
+.adc-button .adc-button-link-ghost {
+  background: transparent;
+  color: #006eb6;
+  border: 2px solid transparent;
+  padding-left: 0;
+  padding-right: 0;
+  text-decoration: underline;
+}
+
+.adc-button .adc-button-link-ghost:hover {
+  color: #00507e;
+}

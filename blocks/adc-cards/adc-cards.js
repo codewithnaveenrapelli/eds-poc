@@ -1,134 +1,107 @@
-function getSourceUrl(block) {
-  const configured = block.dataset.source || block.getAttribute('data-source');
-  return configured ? configured.trim() : '';
+// adc-cards is a CONTAINER block.
+// The first two rows are optional config: row[0]=sectionTitle, row[1]=columns.
+// All remaining rows are card items (from adc-card-item children in UE).
+// Each card row: cells[0]=image, cells[1]=imageAlt, cells[2]=title,
+//               cells[3]=desc, cells[4]=ctaLabel, cells[5]=ctaUrl
+
+function buildCard(cells) {
+  const card = document.createElement('div');
+  card.className = 'adc-cards-card';
+
+  const picEl = cells[0]?.querySelector('picture, img');
+  if (picEl) {
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'adc-cards-card-img';
+    imgWrap.append(picEl.closest('picture') || picEl);
+    card.append(imgWrap);
+  }
+
+  const body = document.createElement('div');
+  body.className = 'adc-cards-card-body';
+
+  const title = cells[2]?.textContent.trim();
+  if (title) {
+    const h = document.createElement('h3');
+    h.className = 'adc-cards-card-title';
+    h.textContent = title;
+    body.append(h);
+  }
+
+  const desc = cells[3]?.textContent.trim();
+  if (desc) {
+    const p = document.createElement('p');
+    p.className = 'adc-cards-card-desc';
+    p.textContent = desc;
+    body.append(p);
+  }
+
+  const ctaLabel = cells[4]?.textContent.trim();
+  const ctaUrl = cells[5]?.textContent.trim();
+  if (ctaLabel && ctaUrl) {
+    const a = document.createElement('a');
+    a.href = ctaUrl;
+    a.className = 'adc-cards-card-link';
+    a.textContent = ctaLabel;
+    body.append(a);
+  }
+
+  card.append(body);
+  return card;
 }
 
-function resolveAssetUrl(url, source) {
-  if (!url) return '';
-  if (/^https?:\/\//i.test(url)) return url;
+export default function decorate(block) {
+  const rows = [...block.querySelectorAll(':scope > div')];
+  if (!rows.length) return;
 
-  if (source && /^https?:\/\//i.test(source) && url.startsWith('/')) {
-    try {
-      return `${new URL(source).origin}${url}`;
-    } catch {
-      return url;
+  // First row may be section title (only one cell, no picture)
+  let startIdx = 0;
+  let sectionTitle = '';
+  let columns = 3;
+
+  const firstCells = [...rows[0].querySelectorAll(':scope > div')];
+  const hasPicture = !!firstCells[0]?.querySelector('picture, img');
+  const isConfig = !hasPicture && firstCells.length <= 2;
+
+  if (isConfig) {
+    sectionTitle = firstCells[0]?.textContent.trim() || '';
+    const colText = firstCells[1]?.textContent.trim();
+    if (colText && !Number.isNaN(parseInt(colText, 10))) {
+      columns = parseInt(colText, 10);
+    }
+    startIdx = 1;
+    // check if second row is also config (columns)
+    if (rows[1]) {
+      const r1 = [...rows[1].querySelectorAll(':scope > div')];
+      if (!r1[0]?.querySelector('picture, img') && r1.length <= 1) {
+        const colVal = r1[0]?.textContent.trim();
+        if (colVal && !Number.isNaN(parseInt(colVal, 10))) {
+          columns = parseInt(colVal, 10);
+        }
+        startIdx = 2;
+      }
     }
   }
 
-  if (window.EDS_AEM_ORIGIN && url.startsWith('/')) {
-    return `${window.EDS_AEM_ORIGIN}${url}`;
+  const wrap = document.createElement('div');
+  wrap.className = 'adc-cards-wrap';
+
+  if (sectionTitle) {
+    const h = document.createElement('h2');
+    h.className = 'adc-cards-section-title';
+    h.textContent = sectionTitle;
+    wrap.append(h);
   }
 
-  return url;
-}
+  const grid = document.createElement('div');
+  grid.className = 'adc-cards-grid';
+  grid.style.setProperty('--adc-cards-cols', columns);
 
-async function fetchContractJson(source, componentName) {
-  const response = await fetch(source, { credentials: 'include' });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${componentName} data: ${response.status}`);
-  }
+  rows.slice(startIdx).forEach((row) => {
+    const cells = [...row.querySelectorAll(':scope > div')];
+    grid.append(buildCard(cells));
+  });
 
-  const contentType = response.headers.get('content-type') || '';
-  if (!contentType.toLowerCase().includes('application/json')) {
-    const body = await response.text();
-    const hint = body && body.includes('<')
-      ? 'Non-JSON response (likely login page/CORS/404).'
-      : 'Non-JSON response.';
-    throw new Error(`${hint} URL: ${source}`);
-  }
-
-  return response.json();
-}
-
-function renderCard(card, source) {
-  if (!card) return '';
-
-  const image = card.image || {};
-  const logo = card.logo || {};
-  const imageSrc = resolveAssetUrl(image.src || '', source);
-  const logoSrc = resolveAssetUrl(logo.src || '', source);
-  const tag = card.tag ? `<p class="adc-cards-tag">${card.tag}</p>` : '';
-  const title = card.title ? `<h3>${card.title}</h3>` : '';
-  const description = card.description ? `<p>${card.description}</p>` : '';
-  const cta = card.link && card.link.href
-    ? `<a class="button" href="${card.link.href}"${card.link.newTab ? ' target="_blank" rel="noopener noreferrer"' : ''}>${card.link.label || 'Learn more'}</a>`
-    : '';
-
-  return `
-    <li class="adc-cards-item">
-      ${imageSrc ? `<img src="${imageSrc}" alt="${image.alt || ''}" loading="lazy">` : ''}
-      <div class="adc-cards-body">
-        ${logoSrc ? `<img class="adc-cards-logo" src="${logoSrc}" alt="${logo.alt || ''}" loading="lazy">` : ''}
-        ${tag}
-        ${title}
-        ${description}
-        ${cta}
-      </div>
-    </li>
-  `;
-}
-
-function textFromCell(cell) {
-  return (cell?.textContent || '').trim();
-}
-
-function cardFromInlineRow(row, index) {
-  const cells = [...row.children];
-  const imageEl = cells[0]?.querySelector('img');
-  const logoEl = cells[1]?.querySelector('img');
-  const linkEl = cells[5]?.querySelector('a[href]');
-
-  const image = imageEl
-    ? { src: imageEl.getAttribute('src') || '', alt: imageEl.getAttribute('alt') || '' }
-    : {};
-
-  const logo = logoEl
-    ? { src: logoEl.getAttribute('src') || '', alt: logoEl.getAttribute('alt') || '' }
-    : {};
-
-  const link = linkEl
-    ? {
-      label: (linkEl.textContent || '').trim() || 'Learn more',
-      href: linkEl.getAttribute('href') || '',
-      newTab: (linkEl.getAttribute('target') || '').toLowerCase() === '_blank',
-    }
-    : null;
-
-  return {
-    id: `inline-card-${index + 1}`,
-    image,
-    logo,
-    tag: textFromCell(cells[2]),
-    title: textFromCell(cells[3]),
-    description: textFromCell(cells[4]),
-    link,
-  };
-}
-
-function renderInlineCards(block) {
-  const rows = [...block.children].filter((child) => child.children.length > 0);
-  const cards = rows.map((row, index) => cardFromInlineRow(row, index));
-  if (cards.length === 0) {
-    block.innerHTML = '<p>Cards content is not authored.</p>';
-    return;
-  }
-
-  block.innerHTML = `<ul class="adc-cards-list">${cards.map((card) => renderCard(card, '')).join('')}</ul>`;
-}
-
-export default async function decorate(block) {
-  const source = getSourceUrl(block);
-  if (!source) {
-    renderInlineCards(block);
-    return;
-  }
-
-  try {
-    const payload = await fetchContractJson(source, 'cards');
-    const cards = Array.isArray(payload.items) ? payload.items : [];
-
-    block.innerHTML = `<ul class="adc-cards-list">${cards.map((card) => renderCard(card, source)).join('')}</ul>`;
-  } catch (error) {
-    block.innerHTML = `<p>${error.message}</p>`;
-  }
+  wrap.append(grid);
+  block.textContent = '';
+  block.append(wrap);
 }

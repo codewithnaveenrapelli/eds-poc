@@ -23,12 +23,28 @@
         {
           "component": "text",
           "valueType": "string",
-          "name": "source",
-          "label": "Contract JSON URL",
-          "value": "/content/adc/webu/global-reference/components/card-carousel/jcr:content/root/cardcarousel_copy.eds-v1.json"
+          "name": "title",
+          "label": "Section Title (optional)",
+          "value": ""
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "cardsPerScreen",
+          "label": "Cards Visible at Once",
+          "options": [
+            { "name": "2 cards", "value": "2" },
+            { "name": "3 cards", "value": "3" },
+            { "name": "4 cards", "value": "4" }
+          ]
         }
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "adc-card-carousel",
+      "components": ["adc-card-item"]
+    }
+  ]
 }

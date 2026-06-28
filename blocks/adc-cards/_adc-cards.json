@@ -23,12 +23,28 @@
         {
           "component": "text",
           "valueType": "string",
-          "name": "source",
-          "label": "Contract JSON URL (Optional)",
+          "name": "title",
+          "label": "Section Title (optional)",
           "value": ""
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "columns",
+          "label": "Columns per row",
+          "options": [
+            { "name": "2 columns", "value": "2" },
+            { "name": "3 columns", "value": "3" },
+            { "name": "4 columns", "value": "4" }
+          ]
         }
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "adc-cards",
+      "components": ["adc-card-item"]
+    }
+  ]
 }

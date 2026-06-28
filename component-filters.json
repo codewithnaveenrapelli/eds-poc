@@ -16,11 +16,39 @@
       "cards",
       "fragment",
       "columns",
+      "adc-hero-banner",
       "adc-accordion",
       "adc-tabs",
       "adc-cta-banner",
       "adc-card-carousel",
-      "adc-video-playlist"
+      "adc-video-playlist",
+      "adc-cards",
+      "adc-image",
+      "adc-button"
+    ]
+  },
+  {
+    "id": "adc-accordion",
+    "components": [
+      "adc-accordion-item"
+    ]
+  },
+  {
+    "id": "adc-card-carousel",
+    "components": [
+      "adc-card-item"
+    ]
+  },
+  {
+    "id": "adc-cards",
+    "components": [
+      "adc-card-item"
+    ]
+  },
+  {
+    "id": "adc-tabs",
+    "components": [
+      "adc-tabs-item"
     ]
   },
   {

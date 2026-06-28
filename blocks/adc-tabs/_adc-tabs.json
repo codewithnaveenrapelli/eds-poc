@@ -19,8 +19,25 @@
   "models": [
     {
       "id": "adc-tabs",
-      "fields": []
+      "fields": [
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "variant",
+          "label": "Tab Style",
+          "options": [
+            { "name": "Underline (default)", "value": "underline" },
+            { "name": "Pill", "value": "pill" },
+            { "name": "Boxed", "value": "boxed" }
+          ]
+        }
+      ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "adc-tabs",
+      "components": ["adc-tabs-item"]
+    }
+  ]
 }

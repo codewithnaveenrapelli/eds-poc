@@ -25,11 +25,16 @@
           "name": "classes",
           "label": "Options",
           "options": [
-            { "name": "Single Expansion", "value": "single" }
+            { "name": "Single Expansion (only one open at a time)", "value": "single" }
           ]
         }
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "adc-accordion",
+      "components": ["adc-accordion-item"]
+    }
+  ]
 }

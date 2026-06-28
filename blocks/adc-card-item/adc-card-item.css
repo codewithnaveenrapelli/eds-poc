@@ -1,0 +1,51 @@
+.adc-card-item {
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.adc-card-item .adc-card-img img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.adc-card-item .adc-card-body {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.adc-card-item .adc-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.adc-card-item .adc-card-desc {
+  font-size: 0.9375rem;
+  color: #4a4a4a;
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+}
+
+.adc-card-item .adc-card-link {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #006eb6;
+  text-decoration: none;
+  margin-top: auto;
+}
+
+.adc-card-item .adc-card-link:hover {
+  text-decoration: underline;
+}

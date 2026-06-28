@@ -1,0 +1,69 @@
+{
+  "definitions": [
+    {
+      "title": "ADC Card Item",
+      "id": "adc-card-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "ADC Card Item",
+              "model": "adc-card-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "adc-card-item",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Card Image",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "label": "Image Alt Text",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Card Title",
+          "value": ""
+        },
+        {
+          "component": "textarea",
+          "valueType": "string",
+          "name": "description",
+          "label": "Card Description",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "cta_label",
+          "label": "Link / Button Text",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "cta_url",
+          "label": "Link URL",
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

@@ -51,11 +51,15 @@
         "cards",
         "fragment",
         "columns",
+        "adc-hero-banner",
         "adc-accordion",
         "adc-tabs",
         "adc-cta-banner",
         "adc-card-carousel",
-        "adc-video-playlist"
+        "adc-video-playlist",
+        "adc-cards",
+        "adc-image",
+        "adc-button"
       ]
     }
   ]
