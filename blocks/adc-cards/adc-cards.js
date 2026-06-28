@@ -4,15 +4,34 @@
 // Each card row: cells[0]=image, cells[1]=imageAlt, cells[2]=title,
 //               cells[3]=desc, cells[4]=ctaLabel, cells[5]=ctaUrl
 
+function extractImage(imageCell, altText) {
+  if (!imageCell) return null;
+  const pic = imageCell.querySelector('picture');
+  if (pic) { if (altText) { const img = pic.querySelector('img'); if (img) img.alt = altText; } return pic; }
+  const img = imageCell.querySelector('img');
+  if (img) { if (altText) img.alt = altText; return img; }
+  const src = imageCell.textContent.trim();
+  if (src && (src.startsWith('/') || src.startsWith('http'))) {
+    const el = document.createElement('img');
+    el.src = src;
+    el.alt = altText || '';
+    el.loading = 'lazy';
+    return el;
+  }
+  return null;
+}
+
 function buildCard(cells) {
   const card = document.createElement('div');
   card.className = 'adc-cards-card';
 
-  const picEl = cells[0]?.querySelector('picture, img');
+  const altText = cells[1]?.textContent.trim() || '';
+  const picEl = extractImage(cells[0], altText);
   if (picEl) {
     const imgWrap = document.createElement('div');
     imgWrap.className = 'adc-cards-card-img';
-    imgWrap.append(picEl.closest('picture') || picEl);
+    const imgNode = picEl.closest ? (picEl.closest('picture') || picEl) : picEl;
+    imgWrap.append(imgNode);
     card.append(imgWrap);
   }
 
@@ -59,7 +78,9 @@ export default function decorate(block) {
   let columns = 3;
 
   const firstCells = [...rows[0].querySelectorAll(':scope > div')];
-  const hasPicture = !!firstCells[0]?.querySelector('picture, img');
+  const firstSrc = firstCells[0]?.textContent.trim() || '';
+  const hasPicture = !!(firstCells[0]?.querySelector('picture, img')
+    || (firstSrc.startsWith('/') || firstSrc.startsWith('http')));
   const isConfig = !hasPicture && firstCells.length <= 2;
 
   if (isConfig) {
@@ -72,7 +93,10 @@ export default function decorate(block) {
     // check if second row is also config (columns)
     if (rows[1]) {
       const r1 = [...rows[1].querySelectorAll(':scope > div')];
-      if (!r1[0]?.querySelector('picture, img') && r1.length <= 1) {
+      const r1Src = r1[0]?.textContent.trim() || '';
+      const r1HasImg = !!(r1[0]?.querySelector('picture, img')
+        || r1Src.startsWith('/') || r1Src.startsWith('http'));
+      if (!r1HasImg && r1.length <= 1) {
         const colVal = r1[0]?.textContent.trim();
         if (colVal && !Number.isNaN(parseInt(colVal, 10))) {
           columns = parseInt(colVal, 10);

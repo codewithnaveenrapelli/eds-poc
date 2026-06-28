@@ -6,9 +6,27 @@ function cell(row) {
   return row?.firstElementChild || row;
 }
 
+function extractImage(imageCell, altText) {
+  if (!imageCell) return null;
+  const pic = imageCell.querySelector('picture');
+  if (pic) { if (altText) { const img = pic.querySelector('img'); if (img) img.alt = altText; } return pic; }
+  const img = imageCell.querySelector('img');
+  if (img) { if (altText) img.alt = altText; return img; }
+  const src = imageCell.textContent.trim();
+  if (src && (src.startsWith('/') || src.startsWith('http'))) {
+    const el = document.createElement('img');
+    el.src = src;
+    el.alt = altText || '';
+    el.loading = 'lazy';
+    return el;
+  }
+  return null;
+}
+
 export default function decorate(block) {
   const rows = [...block.querySelectorAll(':scope > div')];
-  const picEl = cell(rows[0])?.querySelector('picture, img');
+  const altText = cell(rows[1])?.textContent.trim() || '';
+  const picEl = extractImage(cell(rows[0]), altText);
   const title = rows[2]?.textContent.trim();
   const desc = rows[3]?.textContent.trim();
   const ctaLabel = rows[4]?.textContent.trim();
@@ -20,7 +38,8 @@ export default function decorate(block) {
   if (picEl) {
     const imgWrap = document.createElement('div');
     imgWrap.className = 'adc-card-img';
-    imgWrap.append(picEl.closest('picture') || picEl);
+    const imgNode = picEl.closest ? (picEl.closest('picture') || picEl) : picEl;
+    imgWrap.append(imgNode);
     block.append(imgWrap);
   }
 

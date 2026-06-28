@@ -11,6 +11,26 @@ function buildData(block) {
   return data;
 }
 
+function extractImage(imageCell, altText) {
+  if (!imageCell) return null;
+  const pic = imageCell.querySelector('picture');
+  if (pic) {
+    if (altText) { const img = pic.querySelector('img'); if (img) img.alt = altText; }
+    return pic;
+  }
+  const img = imageCell.querySelector('img');
+  if (img) { if (altText) img.alt = altText; return img; }
+  const src = imageCell.textContent.trim();
+  if (src && (src.startsWith('/') || src.startsWith('http'))) {
+    const el = document.createElement('img');
+    el.src = src;
+    el.alt = altText || '';
+    el.loading = 'lazy';
+    return el;
+  }
+  return null;
+}
+
 export default function decorate(block) {
   const variant = [...block.classList]
     .find((c) => ['left', 'center', 'right'].includes(c)) || 'left';
@@ -18,14 +38,13 @@ export default function decorate(block) {
   block.textContent = '';
   block.classList.add(`variant-${variant}`);
 
-  const picEl = data.image?.querySelector('picture, img');
+  const altText = data.imagealt?.textContent.trim() || '';
+  const picEl = extractImage(data.image, altText);
   if (picEl) {
-    const altText = data.imagealt?.textContent.trim() || '';
-    const img = (picEl.nodeName === 'IMG') ? picEl : picEl.querySelector('img');
-    if (img && altText) img.alt = altText;
     const media = document.createElement('div');
     media.className = 'adc-hero-banner-media';
-    media.append(picEl.closest('picture') || picEl);
+    const imgNode = picEl.closest ? (picEl.closest('picture') || picEl) : picEl;
+    media.append(imgNode);
     block.append(media);
   }
 
