@@ -1,5 +1,21 @@
+const VARIANTS = ['underline', 'pill', 'boxed'];
+
 export default function decorate(block) {
-  const rows = [...block.querySelectorAll(':scope > div')];
+  const allRows = [...block.querySelectorAll(':scope > div')];
+
+  // Skip variant config row (block's own model field, not a tab item)
+  const configRow = allRows.find((row) => {
+    const cells = [...row.querySelectorAll(':scope > div')];
+    return cells.length === 1 && VARIANTS.includes(cells[0].textContent.trim());
+  });
+
+  let variant = 'underline';
+  if (configRow) {
+    variant = configRow.querySelector(':scope > div')?.textContent.trim() || 'underline';
+  }
+  block.classList.add(`variant-${variant}`);
+
+  const rows = allRows.filter((r) => r !== configRow);
 
   const nav = document.createElement('div');
   nav.className = 'adc-tabs-nav';
@@ -8,7 +24,7 @@ export default function decorate(block) {
   const panels = document.createElement('div');
   panels.className = 'adc-tabs-panels';
 
-  rows.forEach((row, idx) => {
+  const tabItems = rows.map((row, idx) => {
     const cells = [...row.querySelectorAll(':scope > div')];
     const label = cells[0]?.textContent.trim() || `Tab ${idx + 1}`;
     const content = cells[1] || cells[0];
@@ -53,8 +69,9 @@ export default function decorate(block) {
 
     nav.append(tab);
     panels.append(panel);
+    return { tab, panel };
   });
 
   block.textContent = '';
-  block.append(nav, panels);
+  if (tabItems.length) block.append(nav, panels);
 }

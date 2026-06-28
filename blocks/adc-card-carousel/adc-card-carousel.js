@@ -1,41 +1,72 @@
+function extractImage(imageCell, altText) {
+  if (!imageCell) return null;
+  const pic = imageCell.querySelector('picture');
+  if (pic) {
+    if (altText) { const img = pic.querySelector('img'); if (img) img.alt = altText; }
+    return pic;
+  }
+  const img = imageCell.querySelector('img');
+  if (img) { if (altText) img.alt = altText; return img; }
+  const src = imageCell.textContent.trim();
+  if (src && (src.startsWith('/') || src.startsWith('http'))) {
+    const el = document.createElement('img');
+    el.src = src;
+    el.alt = altText || '';
+    el.loading = 'lazy';
+    return el;
+  }
+  return null;
+}
+
+function isConfigRow(row) {
+  const cells = [...row.querySelectorAll(':scope > div')];
+  if (cells.length !== 1) return false;
+  const text = cells[0].textContent.trim();
+  if (cells[0].querySelector('picture, img')) return false;
+  if (text.startsWith('/') || text.startsWith('http')) return false;
+  return true;
+}
+
 function buildCard(cells) {
   const card = document.createElement('div');
   card.className = 'adc-carousel-card';
 
-  const img = cells.map((c) => c.querySelector('img')).find(Boolean);
-  if (img) {
+  const altText = cells[1]?.textContent.trim() || '';
+  const picEl = extractImage(cells[0], altText);
+  if (picEl) {
     const imgWrap = document.createElement('div');
     imgWrap.className = 'adc-carousel-card-img';
-    const pic = img.closest('picture') || img;
-    imgWrap.append(pic.cloneNode(true));
+    const imgNode = picEl.closest ? (picEl.closest('picture') || picEl) : picEl;
+    imgWrap.append(imgNode);
     card.append(imgWrap);
   }
 
   const body = document.createElement('div');
   body.className = 'adc-carousel-card-body';
 
-  const heading = cells.flatMap((c) => [...c.querySelectorAll('h1,h2,h3,h4,h5,h6')])[0];
-  if (heading) {
-    const title = document.createElement('p');
-    title.className = 'adc-carousel-card-title';
-    title.textContent = heading.textContent.trim();
-    body.append(title);
+  const title = cells[2]?.textContent.trim();
+  if (title) {
+    const p = document.createElement('p');
+    p.className = 'adc-carousel-card-title';
+    p.textContent = title;
+    body.append(p);
   }
 
-  const paras = cells.flatMap((c) => [...c.querySelectorAll('p')]).filter(
-    (p) => !p.querySelector('img') && !p.querySelector('a'),
-  );
-  paras.forEach((p) => {
-    const desc = document.createElement('p');
-    desc.className = 'adc-carousel-card-desc';
-    desc.textContent = p.textContent.trim();
-    body.append(desc);
-  });
+  const desc = cells[3]?.textContent.trim();
+  if (desc) {
+    const d = document.createElement('p');
+    d.className = 'adc-carousel-card-desc';
+    d.textContent = desc;
+    body.append(d);
+  }
 
-  const link = cells.flatMap((c) => [...c.querySelectorAll('a')]).find(Boolean);
-  if (link) {
-    const a = link.cloneNode(true);
+  const ctaLabel = cells[4]?.textContent.trim();
+  const ctaUrl = cells[5]?.textContent.trim();
+  if (ctaLabel && ctaUrl) {
+    const a = document.createElement('a');
+    a.href = ctaUrl;
     a.className = 'adc-carousel-card-link';
+    a.textContent = ctaLabel;
     body.append(a);
   }
 
@@ -43,12 +74,13 @@ function buildCard(cells) {
   return card;
 }
 
-function renderCarousel(block, cards) {
+function renderCarousel(block, cards, perScreen) {
   const wrapper = document.createElement('div');
   wrapper.className = 'adc-carousel-wrapper';
 
   const track = document.createElement('div');
   track.className = 'adc-carousel-track';
+  track.style.setProperty('--carousel-per-screen', String(perScreen));
 
   cards.forEach((cardEl) => {
     const item = document.createElement('div');
@@ -59,10 +91,6 @@ function renderCarousel(block, cards) {
 
   wrapper.append(track);
 
-  const perScreen = parseInt(
-    getComputedStyle(block).getPropertyValue('--cards-per-screen') || '3',
-    10,
-  );
   const total = cards.length;
   let current = 0;
 
@@ -101,17 +129,50 @@ function renderCarousel(block, cards) {
   }
 
   block.textContent = '';
-  block.append(prev, wrapper, next, dots);
+
+  if (total > 1) {
+    block.append(prev, wrapper, next, dots);
+  } else {
+    block.append(wrapper);
+  }
 }
 
 export default function decorate(block) {
-  const rows = [...block.querySelectorAll(':scope > div')];
-  if (!rows.length) return;
+  const allRows = [...block.querySelectorAll(':scope > div')];
+  if (!allRows.length) return;
 
-  const cards = rows.map((row) => {
+  // Separate config rows (title, cardsPerScreen) from card item rows
+  let titleText = '';
+  let cardsPerScreen = 3;
+  let startIdx = 0;
+
+  while (startIdx < allRows.length && isConfigRow(allRows[startIdx])) {
+    const val = allRows[startIdx].querySelector(':scope > div')?.textContent.trim() || '';
+    const num = parseInt(val, 10);
+    if (!Number.isNaN(num) && num >= 2 && num <= 6) {
+      cardsPerScreen = num;
+    } else if (val) {
+      titleText = val;
+    }
+    startIdx += 1;
+  }
+
+  block.style.setProperty('--cards-per-screen', String(cardsPerScreen));
+  const cardRows = allRows.slice(startIdx);
+
+  if (titleText) {
+    const h = document.createElement('h2');
+    h.className = 'adc-carousel-title';
+    h.textContent = titleText;
+    block.prepend(h);
+  }
+
+  if (!cardRows.length) return;
+
+  const cards = cardRows.map((row) => {
     const cells = [...row.querySelectorAll(':scope > div')];
     return buildCard(cells);
   });
 
-  renderCarousel(block, cards);
+  renderCarousel(block, cards, cardsPerScreen);
 }

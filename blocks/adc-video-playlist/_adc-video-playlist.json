@@ -23,12 +23,17 @@
         {
           "component": "text",
           "valueType": "string",
-          "name": "source",
-          "label": "Exporter JSON URL",
-          "value": "http://localhost:4502/content/adc/webu/global-reference/components/video-playlist/jcr:content/root/videoplaylist.model.json"
+          "name": "title",
+          "label": "Playlist Title (optional)",
+          "value": ""
         }
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "adc-video-playlist",
+      "components": ["adc-video-item"]
+    }
+  ]
 }

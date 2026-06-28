@@ -52,6 +52,12 @@
     ]
   },
   {
+    "id": "adc-video-playlist",
+    "components": [
+      "adc-video-item"
+    ]
+  },
+  {
     "id": "cards",
     "components": [
       "card"

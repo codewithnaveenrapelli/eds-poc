@@ -586,14 +586,47 @@
     ]
   },
   {
+    "id": "adc-video-item",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "thumbnail",
+        "label": "Thumbnail Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Video Title",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "videoUrl",
+        "label": "Video URL (YouTube / Vimeo / MP4)",
+        "value": ""
+      },
+      {
+        "component": "textarea",
+        "valueType": "string",
+        "name": "description",
+        "label": "Short Description (optional)",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "adc-video-playlist",
     "fields": [
       {
         "component": "text",
         "valueType": "string",
-        "name": "source",
-        "label": "Exporter JSON URL",
-        "value": "http://localhost:4502/content/adc/webu/global-reference/components/video-playlist/jcr:content/root/videoplaylist.model.json"
+        "name": "title",
+        "label": "Playlist Title (optional)",
+        "value": ""
       }
     ]
   },
