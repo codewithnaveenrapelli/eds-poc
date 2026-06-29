@@ -1,32 +1,28 @@
 // adc-card-carousel: container block.
 // Parent config rows (1 cell): title text or cardsPerScreen number (2–6).
-// Card-item children (adc-card-item, resourceType: block/v1/block) render as nested
-// block elements: <div class="block adc-card-item [variant]">
-//   The 'classes' field is applied as a CSS class on the nested block element (not a row).
-//   Field rows inside each nested block: [image-row | logo-row | content-row]
-//   Variant is read from the block element's classList.
+// Card-item children use resourceType block/v1/block/item — fields render as cells in
+// a single row (not a nested block element). Cell structure per card:
+//   cells[0]: variant text  (classes field → text cell for block/item children)
+//   cells[1]: card image    (image + imageAlt field-collapsed into <picture>)
+//   cells[2]: logo image    (logo  + logoAlt  field-collapsed into <picture>)
+//   cells[3]: content group (content_title, content_description, content_cta+ctaText)
 
 const CLICKABLE_TYPES = new Set(['clickable-card', 'support']);
 
-function buildCarouselCard(row) {
-  // row = nested <div class="block adc-card-item [variant]"> element
-  const cells = [...row.querySelectorAll(':scope > div')];
+function buildCarouselCard(cells) {
+  const variant = cells[0]?.textContent.trim() || '';
+  const imageCell = cells[1];
+  const contentCell = cells[3]?.firstElementChild;
 
-  const variant = ['logo', 'information', 'support', 'patient-story', 'clickable-card']
-    .find((c) => row.classList.contains(c)) || '';
-
-  // Detect image cell by <picture>; content cell by text/link elements
-  const imageCell = cells.find((c) => c.querySelector('picture'));
-  const contentCell = cells.find((c) => c.querySelector('h1,h2,h3,h4,h5,h6,p,a'))?.firstElementChild;
+  const picture = imageCell?.querySelector('picture');
 
   const card = document.createElement('div');
   card.className = `adc-carousel-card adc-carousel-card-type-${variant || 'default'}`;
 
-  const picture = imageCell?.querySelector('picture');
   if (picture) {
     const imgWrap = document.createElement('div');
     imgWrap.className = 'adc-carousel-card-img';
-    imgWrap.append(picture.closest('picture') || picture);
+    imgWrap.append(picture);
     card.append(imgWrap);
   }
 
@@ -152,21 +148,18 @@ export default function decorate(block) {
   const cardRows = [];
 
   allRows.forEach((row) => {
-    if (row.classList.contains('adc-card-item')) {
-      // nested card-item block — push the whole row for buildCarouselCard
-      cardRows.push(row);
-    } else {
-      const cells = [...row.querySelectorAll(':scope > div')];
-      if (cells.length === 1) {
-        // Config row: title or cardsPerScreen count
-        const val = cells[0].textContent.trim();
-        const num = parseInt(val, 10);
-        if (!Number.isNaN(num) && num >= 2 && num <= 6) {
-          cardsPerScreen = num;
-        } else if (val) {
-          titleText = val;
-        }
+    const cells = [...row.querySelectorAll(':scope > div')];
+    if (cells.length === 1) {
+      // Config row: title or cardsPerScreen count
+      const val = cells[0].textContent.trim();
+      const num = parseInt(val, 10);
+      if (!Number.isNaN(num) && num >= 2 && num <= 6) {
+        cardsPerScreen = num;
+      } else if (val) {
+        titleText = val;
       }
+    } else if (cells.length >= 3) {
+      cardRows.push(cells);
     }
   });
 
@@ -181,6 +174,6 @@ export default function decorate(block) {
 
   if (!cardRows.length) return;
 
-  const cards = cardRows.map((row) => buildCarouselCard(row));
+  const cards = cardRows.map((cells) => buildCarouselCard(cells));
   renderCarousel(block, cards, cardsPerScreen);
 }

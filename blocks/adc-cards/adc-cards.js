@@ -1,27 +1,23 @@
 // adc-cards: container block.
 // Parent config rows (1 cell): section title text or column count ("2"/"3"/"4").
-// Card-item children (adc-card-item, resourceType: block/v1/block) render as nested
-// block elements: <div class="block adc-card-item [variant]">
-//   The 'classes' field is applied as a CSS class on the nested block element (not a row).
-//   Field rows inside each nested block: [image-row | logo-row | content-row]
-//   Variant is read from the block element's classList.
+// Card-item children use resourceType block/v1/block/item — fields render as cells in
+// a single row (not a nested block element). Cell structure per card:
+//   cells[0]: variant text  (classes field → text cell for block/item children)
+//   cells[1]: card image    (image + imageAlt field-collapsed into <picture>)
+//   cells[2]: logo image    (logo  + logoAlt  field-collapsed into <picture>)
+//   cells[3]: content group (content_title, content_description, content_cta+ctaText)
 
 const CLICKABLE_TYPES = new Set(['clickable-card', 'support']);
 
-function buildCard(row) {
-  // row = nested <div class="block adc-card-item [variant]"> element
-  const cells = [...row.querySelectorAll(':scope > div')];
+function buildCard(cells) {
+  const variant = cells[0]?.textContent.trim() || '';
+  const imageCell = cells[1];
+  const logoCell = cells[2];
+  const contentCell = cells[3]?.firstElementChild;
 
-  // 'classes' field = CSS class on element, not a DOM row — read variant from classList
-  const variant = ['logo', 'information', 'support', 'patient-story', 'clickable-card']
-    .find((c) => row.classList.contains(c)) || '';
-
-  // Detect image/logo cells by <picture> presence; content cell by text/link elements
-  const pictureCells = cells.filter((c) => c.querySelector('picture'));
-  const contentCell = cells.find((c) => c.querySelector('h1,h2,h3,h4,h5,h6,p,a'))?.firstElementChild;
-
-  const imageCell = pictureCells[0];
-  const logoCell = pictureCells[1];
+  // Detect image/logo by <picture> as fallback when cells shift (e.g. empty logo)
+  const picture = imageCell?.querySelector('picture');
+  const logoPicture = logoCell?.querySelector('picture');
 
   const card = document.createElement('div');
   card.className = `adc-card-item${variant ? ` ${variant}` : ''}`;
@@ -32,19 +28,17 @@ function buildCard(row) {
   const media = document.createElement('div');
   media.className = 'adc-card-media';
 
-  const picture = imageCell?.querySelector('picture');
   if (picture) {
     const wrap = document.createElement('div');
     wrap.className = 'adc-card-img';
-    wrap.append(picture.closest('picture') || picture);
+    wrap.append(picture);
     media.append(wrap);
   }
 
-  const logoPicture = logoCell?.querySelector('picture');
   if (logoPicture) {
     const wrap = document.createElement('div');
     wrap.className = 'adc-card-logo-img';
-    wrap.append(logoPicture.closest('picture') || logoPicture);
+    wrap.append(logoPicture);
     media.append(wrap);
   }
 
@@ -113,19 +107,16 @@ export default function decorate(block) {
   const cardRows = [];
 
   rows.forEach((row) => {
-    if (row.classList.contains('adc-card-item')) {
-      // nested card-item block — push the whole row for buildCard
-      cardRows.push(row);
-    } else {
-      const cells = [...row.querySelectorAll(':scope > div')];
-      if (cells.length === 1) {
-        const val = cells[0].textContent.trim();
-        if (/^[234]$/.test(val)) {
-          cols = val;
-        } else if (val) {
-          sectionTitle = val;
-        }
+    const cells = [...row.querySelectorAll(':scope > div')];
+    if (cells.length === 1) {
+      const val = cells[0].textContent.trim();
+      if (/^[234]$/.test(val)) {
+        cols = val;
+      } else if (val) {
+        sectionTitle = val;
       }
+    } else if (cells.length >= 3) {
+      cardRows.push(cells);
     }
   });
 
@@ -145,7 +136,7 @@ export default function decorate(block) {
   grid.className = 'adc-cards-grid';
   grid.style.setProperty('--adc-cards-cols', cols);
 
-  cardRows.forEach((row) => grid.append(buildCard(row)));
+  cardRows.forEach((cells) => grid.append(buildCard(cells)));
 
   wrap.append(grid);
   block.append(wrap);
