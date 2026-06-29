@@ -55,6 +55,8 @@ function extractImage(cell) {
  * rendered as separate cells (cells[3]=title, cells[4]=desc, cells[5]=cta).
  */
 function getContentEls(cells) {
+  // eslint-disable-next-line no-console
+  console.log('[adc-cards] cells.length=', cells.length, cells.map((c, i) => `[${i}]:${c?.outerHTML?.slice(0, 120)}`));
   if (cells.length > 4) {
     // Separate cells — each content_* field in its own cell
     const [,,, cell3, cell4] = cells;
