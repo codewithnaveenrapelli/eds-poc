@@ -657,7 +657,7 @@
     ]
   },
   {
-    "id": "adc-hero-banner",
+    "id": "hero-banner",
     "fields": [
       {
         "component": "select",
@@ -843,8 +843,8 @@
       },
       {
         "component": "richtext",
-        "name": "overlapTitle",
-        "label": "Overlap Title",
+        "name": "overlapCopy",
+        "label": "Overlap Copy",
         "valueType": "string",
         "value": "",
         "condition": {
@@ -863,8 +863,8 @@
       },
       {
         "component": "richtext",
-        "name": "mediumOverlapTitle",
-        "label": "Medium Overlap Title",
+        "name": "mediumOverlapCopy",
+        "label": "Medium Overlap Copy",
         "valueType": "string",
         "value": "",
         "condition": {
@@ -874,7 +874,7 @@
     ]
   },
   {
-    "id": "adc-hero-button",
+    "id": "hero-banner-button",
     "fields": [
       {
         "component": "text",

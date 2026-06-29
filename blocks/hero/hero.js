@@ -4,8 +4,8 @@ const KNOWN_FIELDS = new Set([
   'size', 'overlappasset', 'layout', 'mediumoverlappasset', 'shortlayout',
   'desktopimage', 'tabletimage', 'mobileimage', 'alt', 'pretitle',
   'title', 'subtitle', 'description',
-  'overlaplogo', 'overlapimage', 'overlaptitle',
-  'mediumoverlapimage', 'mediumoverlaptitle',
+  'overlaplogo', 'overlapimage', 'overlapcopy',
+  'mediumoverlapimage', 'mediumoverlapcopy',
 ]);
 
 function extractImage(cell) {
@@ -253,12 +253,12 @@ export default function decorate(block) {
       overlapRow.append(overlapImgWrap);
     }
 
-    if (props.overlaptitle) {
+    if (props.overlapcopy) {
       const titleWrap = document.createElement('div');
       titleWrap.className = 'hero-overlap-content';
       const copy = document.createElement('div');
       copy.className = 'hero-copy';
-      copy.innerHTML = props.overlaptitle.innerHTML;
+      copy.innerHTML = props.overlapcopy.innerHTML;
       titleWrap.append(copy);
       overlapRow.append(titleWrap);
     }
@@ -281,12 +281,12 @@ export default function decorate(block) {
       overlapRow.append(overlapImgWrap);
     }
 
-    if (props.mediumoverlaptitle) {
+    if (props.mediumoverlapcopy) {
       const titleWrap = document.createElement('div');
       titleWrap.className = 'hero-overlap-content';
       const copy = document.createElement('div');
       copy.className = 'hero-copy';
-      copy.innerHTML = props.mediumoverlaptitle.innerHTML;
+      copy.innerHTML = props.mediumoverlapcopy.innerHTML;
       titleWrap.append(copy);
       overlapRow.append(titleWrap);
     }

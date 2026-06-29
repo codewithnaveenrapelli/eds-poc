@@ -78,9 +78,9 @@
     ]
   },
   {
-    "id": "adc-hero-banner",
+    "id": "hero-banner",
     "components": [
-      "adc-hero-button"
+      "hero-banner-button"
     ]
   }
 ]
