@@ -183,11 +183,23 @@ export default function decorate(block) {
   rows.forEach((row) => {
     const cells = [...row.querySelectorAll(':scope > div')];
     if (cells.length === 1) {
+      // Single-cell config row: either a digit (columns) or text (section title)
       const val = cells[0].textContent.trim();
-      if (/^\d+$/.test(val)) {
-        cols = val;
-      } else if (val) {
-        sectionTitle = val;
+      if (/^\d+$/.test(val)) cols = val;
+      else if (val) sectionTitle = val;
+    } else if (cells.length === 2) {
+      // xwalk may render block's own fields (title + columns) as a 2-cell row
+      const v0 = cells[0].textContent.trim();
+      const v1 = cells[1].textContent.trim();
+      if (/^\d+$/.test(v1)) {
+        cols = v1;
+        if (v0) sectionTitle = v0;
+      } else if (/^\d+$/.test(v0)) {
+        cols = v0;
+        if (v1) sectionTitle = v1;
+      } else {
+        // Both cells are text — treat first as title
+        if (v0) sectionTitle = v0;
       }
     } else if (cells.length >= 3) {
       cardRows.push({ row, cells });

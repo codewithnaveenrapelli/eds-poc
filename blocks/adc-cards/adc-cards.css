@@ -12,9 +12,23 @@
   gap: 1.5rem;
 }
 
+/* Empty state placeholder visible in the author canvas */
+.adc-cards .adc-cards-grid:not(:has(.adc-card-item))::before {
+  content: '+ Add ADC Card Items';
+  display: block;
+  padding: 2rem;
+  color: #888;
+  text-align: center;
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  width: 100%;
+  grid-column: 1 / -1;
+}
+
+/* Tablet: cap at 2 columns but still respect user value if lower */
 @media (width <= 1024px) {
   .adc-cards .adc-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(min(var(--adc-cards-cols, 2), 2), 1fr);
   }
 }
 
