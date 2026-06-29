@@ -21,6 +21,18 @@
       "id": "adc-hero-banner",
       "fields": [
         {
+          "component": "select",
+          "name": "classes",
+          "value": "",
+          "label": "Layout",
+          "valueType": "string",
+          "options": [
+            { "name": "Text Left", "value": "left" },
+            { "name": "Text Centre (Default)", "value": "" },
+            { "name": "Text Right", "value": "right" }
+          ]
+        },
+        {
           "component": "reference",
           "valueType": "string",
           "name": "image",
@@ -35,23 +47,49 @@
           "value": ""
         },
         {
-          "component": "select",
-          "valueType": "string",
-          "name": "variant",
-          "label": "Layout",
-          "options": [
-            { "name": "Text Left", "value": "left" },
-            { "name": "Text Centre", "value": "center" },
-            { "name": "Text Right", "value": "right" }
-          ]
+          "component": "richtext",
+          "name": "content_eyebrow",
+          "label": "Eyebrow / Tagline",
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "content_title",
+          "label": "Title",
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "content_description",
+          "label": "Description",
+          "valueType": "string"
+        },
+        {
+          "component": "aem-content",
+          "name": "content_cta1",
+          "label": "CTA 1 Link",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "content_cta1Text",
+          "label": "CTA 1 Label",
+          "valueType": "string"
+        },
+        {
+          "component": "aem-content",
+          "name": "content_cta2",
+          "label": "CTA 2 Link",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "content_cta2Text",
+          "label": "CTA 2 Label",
+          "valueType": "string"
         }
       ]
     }
   ],
-  "filters": [
-    {
-      "id": "adc-hero-banner",
-      "components": ["adc-hero-text", "adc-button"]
-    }
-  ]
+  "filters": []
 }

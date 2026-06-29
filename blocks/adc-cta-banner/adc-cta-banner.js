@@ -1,75 +1,47 @@
-// adc-cta-banner is a CONTAINER block.
-// Config row (1 cell): variant
-// adc-hero-text child (2 cells): richtext content + type (title/description)
-// adc-button child (4 cells): label + url + variant + newTab
-
-const CTA_VARIANTS = ['yellow', 'grey', 'dark'];
+// adc-cta-banner: flat block.
+// 'classes' field (style: yellow / grey / dark) is applied to the block element
+// by AEM as a CSS class — no row parsing needed for style variant.
+// Row 0: content cell (content_title, content_description,
+//         content_cta1 + content_cta1Text, content_cta2 + content_cta2Text
+//         all element-grouped into one cell, rendered in DOM order).
 
 export default function decorate(block) {
-  const allRows = [...block.querySelectorAll(':scope > div')];
+  const [contentRow] = [...block.querySelectorAll(':scope > div')];
+  const contentCell = contentRow?.firstElementChild;
 
-  let variant = 'yellow';
-  const textItems = [];
-  const ctaItems = [];
-
-  allRows.forEach((row) => {
-    const cells = [...row.querySelectorAll(':scope > div')];
-
-    if (cells.length === 1) {
-      const text = cells[0].textContent.trim().toLowerCase();
-      if (CTA_VARIANTS.includes(text)) variant = text;
-    } else if (cells.length === 2) {
-      const [contentCell, typeCell] = cells;
-      const type = typeCell.textContent.trim().toLowerCase() || 'description';
-      textItems.push({
-        content: contentCell, type,
-      });
-    } else if (cells.length >= 3) {
-      const [labelCell, urlCell] = cells;
-      const label = labelCell.textContent.trim();
-      const url = urlCell.textContent.trim();
-      const btnVariant = cells[2]?.textContent.trim() || 'primary';
-      const newTab = cells[3]?.textContent.trim() === 'true';
-      if (label && url) {
-        ctaItems.push({
-          label, url, variant: btnVariant, newTab,
-        });
-      }
-    }
-  });
-
-  block.classList.add(variant);
-  block.textContent = '';
+  block.innerHTML = '';
 
   const inner = document.createElement('div');
   inner.className = 'adc-cta-banner-container';
 
-  textItems.forEach(({ content, type }) => {
-    if (type === 'title') {
-      const h = document.createElement('h2');
-      h.className = 'adc-cta-banner-title';
-      h.innerHTML = content.innerHTML;
-      inner.append(h);
-    } else {
-      const p = document.createElement('p');
-      p.className = 'adc-cta-banner-desc';
-      p.innerHTML = content.innerHTML;
-      inner.append(p);
-    }
-  });
-
-  if (ctaItems.length) {
-    const btns = document.createElement('div');
-    btns.className = 'adc-cta-banner-buttons';
-    ctaItems.forEach(({ label, url, newTab }) => {
-      const a = document.createElement('a');
-      a.href = url;
-      a.className = 'adc-cta-banner-btn';
-      a.textContent = label;
-      if (newTab) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
-      btns.append(a);
+  if (contentCell) {
+    [...contentCell.children].forEach((child) => {
+      const tag = child.tagName.toLowerCase();
+      if (/^h[1-6]$/.test(tag)) {
+        const h = document.createElement('h2');
+        h.className = 'adc-cta-banner-title';
+        h.innerHTML = child.innerHTML;
+        inner.append(h);
+      } else if (tag === 'p') {
+        const p = document.createElement('p');
+        p.className = 'adc-cta-banner-desc';
+        p.innerHTML = child.innerHTML;
+        inner.append(p);
+      } else if (tag === 'a') {
+        let btns = inner.querySelector('.adc-cta-banner-buttons');
+        if (!btns) {
+          btns = document.createElement('div');
+          btns.className = 'adc-cta-banner-buttons';
+          inner.append(btns);
+        }
+        const a = document.createElement('a');
+        a.href = child.href;
+        a.className = 'adc-cta-banner-btn';
+        a.textContent = child.textContent.trim();
+        if (child.target) a.target = child.target;
+        btns.append(a);
+      }
     });
-    inner.append(btns);
   }
 
   block.append(inner);

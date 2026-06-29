@@ -23,8 +23,8 @@
       "adc-card-carousel",
       "adc-video-playlist",
       "adc-cards",
-      "adc-image",
-      "adc-button"
+      "adc-card-item",
+      "adc-image"
     ]
   },
   {
@@ -40,32 +40,9 @@
     ]
   },
   {
-    "id": "adc-card-item",
-    "components": [
-      "adc-card-image",
-      "adc-card-logo",
-      "adc-hero-text",
-      "adc-button"
-    ]
-  },
-  {
     "id": "adc-cards",
     "components": [
       "adc-card-item"
-    ]
-  },
-  {
-    "id": "adc-cta-banner",
-    "components": [
-      "adc-hero-text",
-      "adc-button"
-    ]
-  },
-  {
-    "id": "adc-hero-banner",
-    "components": [
-      "adc-hero-text",
-      "adc-button"
     ]
   },
   {

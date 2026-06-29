@@ -177,51 +177,6 @@
     ]
   },
   {
-    "id": "adc-button",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "label",
-        "label": "Button Label",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "url",
-        "label": "Target URL",
-        "value": ""
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "variant",
-        "label": "Button Style",
-        "options": [
-          {
-            "name": "Primary (Blue filled)",
-            "value": "primary"
-          },
-          {
-            "name": "Secondary (Outline)",
-            "value": "secondary"
-          },
-          {
-            "name": "Ghost (Text link)",
-            "value": "ghost"
-          }
-        ]
-      },
-      {
-        "component": "boolean",
-        "name": "openInNewTab",
-        "label": "Open in New Tab",
-        "value": false
-      }
-    ]
-  },
-  {
     "id": "adc-card-carousel",
     "fields": [
       {
@@ -254,36 +209,18 @@
     ]
   },
   {
-    "id": "adc-card-image",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Card Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Alt Text",
-        "value": ""
-      }
-    ]
-  },
-  {
     "id": "adc-card-item",
     "fields": [
       {
         "component": "select",
-        "valueType": "string",
-        "name": "variant",
+        "name": "classes",
+        "value": "",
         "label": "Card Type",
+        "valueType": "string",
         "options": [
           {
             "name": "Default",
-            "value": "default"
+            "value": ""
           },
           {
             "name": "Logo",
@@ -308,37 +245,56 @@
         ]
       },
       {
-        "component": "text",
+        "component": "reference",
         "valueType": "string",
-        "name": "link_url",
-        "label": "Destination URL",
-        "description": "Used for support and clickable-card types",
-        "value": ""
+        "name": "image",
+        "label": "Card Image",
+        "multi": false
       },
       {
-        "component": "checkbox",
-        "valueType": "boolean",
-        "name": "link_newTab",
-        "label": "Open in New Tab"
-      }
-    ]
-  },
-  {
-    "id": "adc-card-logo",
-    "fields": [
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
+        "value": ""
+      },
       {
         "component": "reference",
         "valueType": "string",
         "name": "logo",
-        "label": "Logo Image",
+        "label": "Logo",
         "multi": false
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "logoAlt",
-        "label": "Alt Text",
+        "label": "Logo Alt Text",
         "value": ""
+      },
+      {
+        "component": "richtext",
+        "name": "content_title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "content_description",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "content_cta",
+        "label": "CTA Link",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "content_ctaText",
+        "label": "CTA Label",
+        "valueType": "string"
       }
     ]
   },
@@ -379,12 +335,13 @@
     "fields": [
       {
         "component": "select",
-        "valueType": "string",
-        "name": "variant",
+        "name": "classes",
+        "value": "yellow",
         "label": "Style",
+        "valueType": "string",
         "options": [
           {
-            "name": "Yellow (default)",
+            "name": "Yellow (Default)",
             "value": "yellow"
           },
           {
@@ -396,12 +353,69 @@
             "value": "dark"
           }
         ]
+      },
+      {
+        "component": "richtext",
+        "name": "content_title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "content_description",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "content_cta1",
+        "label": "CTA 1 Link",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "content_cta1Text",
+        "label": "CTA 1 Label",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "content_cta2",
+        "label": "CTA 2 Link",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "content_cta2Text",
+        "label": "CTA 2 Label",
+        "valueType": "string"
       }
     ]
   },
   {
     "id": "adc-hero-banner",
     "fields": [
+      {
+        "component": "select",
+        "name": "classes",
+        "value": "",
+        "label": "Layout",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Text Left",
+            "value": "left"
+          },
+          {
+            "name": "Text Centre (Default)",
+            "value": ""
+          },
+          {
+            "name": "Text Right",
+            "value": "right"
+          }
+        ]
+      },
       {
         "component": "reference",
         "valueType": "string",
@@ -417,56 +431,46 @@
         "value": ""
       },
       {
-        "component": "select",
-        "valueType": "string",
-        "name": "variant",
-        "label": "Layout",
-        "options": [
-          {
-            "name": "Text Left",
-            "value": "left"
-          },
-          {
-            "name": "Text Centre",
-            "value": "center"
-          },
-          {
-            "name": "Text Right",
-            "value": "right"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "adc-hero-text",
-    "fields": [
-      {
         "component": "richtext",
-        "valueType": "string",
-        "name": "text",
-        "label": "Content",
-        "value": ""
+        "name": "content_eyebrow",
+        "label": "Eyebrow / Tagline",
+        "valueType": "string"
       },
       {
-        "component": "select",
-        "valueType": "string",
-        "name": "type",
-        "label": "Text Type",
-        "options": [
-          {
-            "name": "Title (H2)",
-            "value": "title"
-          },
-          {
-            "name": "Tagline / Eyebrow",
-            "value": "tagline"
-          },
-          {
-            "name": "Description",
-            "value": "description"
-          }
-        ]
+        "component": "richtext",
+        "name": "content_title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "content_description",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "content_cta1",
+        "label": "CTA 1 Link",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "content_cta1Text",
+        "label": "CTA 1 Label",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "content_cta2",
+        "label": "CTA 2 Link",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "content_cta2Text",
+        "label": "CTA 2 Label",
+        "valueType": "string"
       }
     ]
   },

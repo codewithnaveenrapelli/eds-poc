@@ -22,11 +22,12 @@
       "fields": [
         {
           "component": "select",
-          "valueType": "string",
-          "name": "variant",
+          "name": "classes",
+          "value": "",
           "label": "Card Type",
+          "valueType": "string",
           "options": [
-            { "name": "Default", "value": "default" },
+            { "name": "Default", "value": "" },
             { "name": "Logo", "value": "logo" },
             { "name": "Information", "value": "information" },
             { "name": "Support", "value": "support" },
@@ -35,26 +36,59 @@
           ]
         },
         {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Card Image",
+          "multi": false
+        },
+        {
           "component": "text",
           "valueType": "string",
-          "name": "link_url",
-          "label": "Destination URL",
-          "description": "Used for support and clickable-card types",
+          "name": "imageAlt",
+          "label": "Image Alt Text",
           "value": ""
         },
         {
-          "component": "checkbox",
-          "valueType": "boolean",
-          "name": "link_newTab",
-          "label": "Open in New Tab"
+          "component": "reference",
+          "valueType": "string",
+          "name": "logo",
+          "label": "Logo",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "logoAlt",
+          "label": "Logo Alt Text",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "content_title",
+          "label": "Title",
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "content_description",
+          "label": "Description",
+          "valueType": "string"
+        },
+        {
+          "component": "aem-content",
+          "name": "content_cta",
+          "label": "CTA Link",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "content_ctaText",
+          "label": "CTA Label",
+          "valueType": "string"
         }
       ]
     }
   ],
-  "filters": [
-    {
-      "id": "adc-card-item",
-      "components": ["adc-card-image", "adc-card-logo", "adc-hero-text", "adc-button"]
-    }
-  ]
+  "filters": []
 }

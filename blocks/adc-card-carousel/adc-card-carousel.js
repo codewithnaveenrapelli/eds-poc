@@ -1,181 +1,76 @@
-// adc-card-carousel CONTAINER block.
-// Config rows (1 cell): title text or cardsPerScreen number.
-// Card-item rows: nested containers (adc-card-item) detected by hasSubRows().
-// Each card-item sub-row follows adc-card-item.js cell-count conventions:
-//   1 cell = config (variant / link_url / link_newTab)
-//   2 cells + image = adc-card-image (1st) or adc-card-logo (2nd)
-//   2 cells + text  = adc-hero-text (content + type)
-//   4 cells         = adc-button (label + url + variant + newTab)
+// adc-card-carousel: container block.
+// Parent config rows (1 cell): title text or cardsPerScreen number (2–6).
+// Card-item child rows (4 cells): [classes-text | image | logo | content-group].
+//   Cell 0: variant text (classes field value)
+//   Cell 1: card image  (image + imageAlt field-collapsed into <picture>)
+//   Cell 2: logo image  (logo  + logoAlt  field-collapsed into <picture>)
+//   Cell 3: content     (content_title, content_description, content_cta+ctaText grouped)
 
-const CARD_TYPES = [
-  'default', 'logo', 'information', 'support', 'patient-story', 'clickable-card',
-];
+const CLICKABLE_TYPES = new Set(['clickable-card', 'support']);
 
-function hasSubRows(row) {
-  return !!row.firstElementChild?.querySelector(':scope > div');
-}
-
-function hasImageContent(cell) {
-  return !!(cell.querySelector('picture, img') || cell.querySelector('a[href]'));
-}
-
-function extractImage(imageCell, altText) {
-  if (!imageCell) return null;
-  const pic = imageCell.querySelector('picture');
-  if (pic) {
-    if (altText) {
-      const img = pic.querySelector('img');
-      if (img) img.alt = altText;
-    }
-    return pic;
-  }
-  const img = imageCell.querySelector('img');
-  if (img) {
-    if (altText) img.alt = altText;
-    return img;
-  }
-  const a = imageCell.querySelector('a');
-  if (a) {
-    const imgInA = a.querySelector('img');
-    if (imgInA) {
-      if (altText) imgInA.alt = altText;
-      return imgInA;
-    }
-    const href = a.getAttribute('href') || '';
-    if (href && (href.startsWith('/') || href.startsWith('http') || href.startsWith('//'))) {
-      const el = document.createElement('img');
-      el.src = href;
-      el.alt = altText || '';
-      el.loading = 'lazy';
-      return el;
-    }
-  }
-  const src = imageCell.textContent.trim();
-  if (src && (src.startsWith('/') || src.startsWith('http') || src.startsWith('//'))) {
-    const el = document.createElement('img');
-    el.src = src;
-    el.alt = altText || '';
-    el.loading = 'lazy';
-    return el;
-  }
-  return null;
-}
-
-function buildCarouselCard(row) {
-  const subRows = [...row.querySelectorAll(':scope > div')];
-
-  let cardType = 'default';
-  let cardLink = '';
-  let openInNewTab = false;
-  let imageCell = null;
-  let imageAlt = '';
-  const titleItems = [];
-  const descItems = [];
-  const actions = [];
-  let imageCount = 0;
-
-  subRows.forEach((subRow) => {
-    const cells = [...subRow.querySelectorAll(':scope > div')];
-
-    if (cells.length === 1) {
-      const [firstCell] = cells;
-      const text = firstCell.textContent.trim().toLowerCase();
-      if (CARD_TYPES.includes(text)) {
-        cardType = text;
-      } else if (text === 'true' || text === 'false') {
-        openInNewTab = text === 'true';
-      } else {
-        const raw = firstCell.textContent.trim();
-        if (raw.startsWith('/') || raw.startsWith('http') || raw.startsWith('//')) {
-          cardLink = raw;
-        }
-      }
-    } else if (cells.length === 2) {
-      const [c0, c1] = cells;
-      if (hasImageContent(c0)) {
-        imageCount += 1;
-        if (imageCount === 1) {
-          imageCell = c0;
-          imageAlt = c1.textContent.trim();
-        }
-        // logo skipped in carousel (no logo display needed)
-      } else {
-        const type = c1.textContent.trim().toLowerCase() || 'description';
-        if (type === 'title') {
-          titleItems.push(c0);
-        } else {
-          descItems.push(c0);
-        }
-      }
-    } else if (cells.length >= 3) {
-      const [labelCell, urlCell] = cells;
-      const label = labelCell.textContent.trim();
-      const url = urlCell.textContent.trim();
-      const newTab = cells[3]?.textContent.trim() === 'true';
-      if (label && url) {
-        actions.push({
-          label, url, newTab,
-        });
-      }
-    }
-  });
+function buildCarouselCard(cells) {
+  const variant = cells[0]?.textContent.trim() || 'default';
+  const imageCell = cells[1];
+  const contentCell = cells[3]?.firstElementChild;
 
   const card = document.createElement('div');
-  card.className = `adc-carousel-card adc-carousel-card-type-${cardType}`;
+  card.className = `adc-carousel-card adc-carousel-card-type-${variant || 'default'}`;
 
-  const isLinked = (cardType === 'clickable-card' || cardType === 'support') && cardLink;
-  let wrapper = card;
-  if (isLinked) {
-    const a = document.createElement('a');
-    a.href = cardLink;
-    a.className = 'adc-carousel-card-link-wrap';
-    if (openInNewTab) {
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-    }
-    card.append(a);
-    wrapper = a;
-  }
-
-  const picEl = extractImage(imageCell, imageAlt);
-  if (picEl) {
+  const picture = imageCell?.querySelector('picture');
+  if (picture) {
     const imgWrap = document.createElement('div');
     imgWrap.className = 'adc-carousel-card-img';
-    imgWrap.append(picEl.closest ? (picEl.closest('picture') || picEl) : picEl);
-    wrapper.append(imgWrap);
+    imgWrap.append(picture.closest('picture') || picture);
+    card.append(imgWrap);
   }
 
   const body = document.createElement('div');
   body.className = 'adc-carousel-card-body';
 
-  titleItems.forEach((titleEl) => {
+  const heading = contentCell?.querySelector('h1,h2,h3,h4,h5,h6');
+  const desc = contentCell?.querySelector('p');
+  const cta = contentCell?.querySelector('a');
+
+  if (heading) {
     const p = document.createElement('p');
     p.className = 'adc-carousel-card-title';
-    p.innerHTML = titleEl.innerHTML;
+    p.innerHTML = heading.innerHTML;
     body.append(p);
-  });
+  }
 
-  descItems.forEach((descEl) => {
+  if (desc) {
     const d = document.createElement('p');
     d.className = 'adc-carousel-card-desc';
-    d.innerHTML = descEl.innerHTML;
+    d.innerHTML = desc.innerHTML;
     body.append(d);
-  });
+  }
 
-  if (!isLinked && actions.length) {
-    const [firstAction] = actions;
+  if (!CLICKABLE_TYPES.has(variant) && cta) {
     const a = document.createElement('a');
-    a.href = firstAction.url;
+    a.href = cta.href;
     a.className = 'adc-carousel-card-link';
-    a.textContent = firstAction.label;
-    if (firstAction.newTab) {
+    a.textContent = cta.textContent.trim();
+    if (cta.target === '_blank') {
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
     }
     body.append(a);
   }
 
-  wrapper.append(body);
+  card.append(body);
+
+  if (CLICKABLE_TYPES.has(variant) && cta) {
+    const wrap = document.createElement('a');
+    wrap.href = cta.href;
+    wrap.className = 'adc-carousel-card-link-wrap';
+    if (cta.target === '_blank') {
+      wrap.target = '_blank';
+      wrap.rel = 'noopener noreferrer';
+    }
+    wrap.append(...card.childNodes);
+    card.append(wrap);
+  }
+
   return card;
 }
 
@@ -246,25 +141,28 @@ export default function decorate(block) {
   const allRows = [...block.querySelectorAll(':scope > div')];
   if (!allRows.length) return;
 
-  // Config rows are simple 1-cell rows (not nested card containers)
   let titleText = '';
   let cardsPerScreen = 3;
-  let startIdx = 0;
+  const cardRows = [];
 
-  while (startIdx < allRows.length && !hasSubRows(allRows[startIdx])) {
-    const [firstCell] = allRows[startIdx].querySelectorAll(':scope > div');
-    const val = firstCell?.textContent.trim() || '';
-    const num = parseInt(val, 10);
-    if (!Number.isNaN(num) && num >= 2 && num <= 6) {
-      cardsPerScreen = num;
-    } else if (val) {
-      titleText = val;
+  allRows.forEach((row) => {
+    const cells = [...row.querySelectorAll(':scope > div')];
+    if (cells.length === 1) {
+      // Config row: title or cardsPerScreen count
+      const val = cells[0].textContent.trim();
+      const num = parseInt(val, 10);
+      if (!Number.isNaN(num) && num >= 2 && num <= 6) {
+        cardsPerScreen = num;
+      } else if (val) {
+        titleText = val;
+      }
+    } else if (cells.length >= 3) {
+      // Card-item child row (4 cells from flat model)
+      cardRows.push(cells);
     }
-    startIdx += 1;
-  }
+  });
 
   block.style.setProperty('--cards-per-screen', String(cardsPerScreen));
-  const cardRows = allRows.slice(startIdx).filter(hasSubRows);
 
   if (titleText) {
     const h = document.createElement('h2');
@@ -275,7 +173,6 @@ export default function decorate(block) {
 
   if (!cardRows.length) return;
 
-  const cards = cardRows.map((row) => buildCarouselCard(row));
-
+  const cards = cardRows.map((cells) => buildCarouselCard(cells));
   renderCarousel(block, cards, cardsPerScreen);
 }

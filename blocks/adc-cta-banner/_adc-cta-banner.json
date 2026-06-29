@@ -22,22 +22,54 @@
       "fields": [
         {
           "component": "select",
-          "valueType": "string",
-          "name": "variant",
+          "name": "classes",
+          "value": "yellow",
           "label": "Style",
+          "valueType": "string",
           "options": [
-            { "name": "Yellow (default)", "value": "yellow" },
+            { "name": "Yellow (Default)", "value": "yellow" },
             { "name": "Grey", "value": "grey" },
             { "name": "Dark", "value": "dark" }
           ]
+        },
+        {
+          "component": "richtext",
+          "name": "content_title",
+          "label": "Title",
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "content_description",
+          "label": "Description",
+          "valueType": "string"
+        },
+        {
+          "component": "aem-content",
+          "name": "content_cta1",
+          "label": "CTA 1 Link",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "content_cta1Text",
+          "label": "CTA 1 Label",
+          "valueType": "string"
+        },
+        {
+          "component": "aem-content",
+          "name": "content_cta2",
+          "label": "CTA 2 Link",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "content_cta2Text",
+          "label": "CTA 2 Label",
+          "valueType": "string"
         }
       ]
     }
   ],
-  "filters": [
-    {
-      "id": "adc-cta-banner",
-      "components": ["adc-hero-text", "adc-button"]
-    }
-  ]
+  "filters": []
 }
