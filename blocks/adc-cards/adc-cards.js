@@ -199,7 +199,7 @@ export default function decorate(block) {
         if (v1) sectionTitle = v1;
       } else {
         // Both cells are text — treat first as title
-        if (v0) sectionTitle = v0;
+        sectionTitle = v0 || sectionTitle;
       }
     } else if (cells.length >= 3) {
       cardRows.push({ row, cells });
