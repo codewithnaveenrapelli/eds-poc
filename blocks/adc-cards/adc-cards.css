@@ -25,13 +25,6 @@
   grid-column: 1 / -1;
 }
 
-/* Tablet: cap at 2 columns but still respect user value if lower */
-@media (width <= 1024px) {
-  .adc-cards .adc-cards-grid {
-    grid-template-columns: repeat(min(var(--adc-cards-cols, 2), 2), 1fr);
-  }
-}
-
 @media (width <= 640px) {
   .adc-cards .adc-cards-grid {
     grid-template-columns: 1fr;
