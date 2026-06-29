@@ -10,7 +10,11 @@
             "template": {
               "name": "ADC Cards",
               "model": "adc-cards",
-              "filter": "adc-cards"
+              "filter": "adc-cards",
+              "columns": "3",
+              "item0": { "name": "ADC Card Item", "model": "adc-card-item" },
+              "item1": { "name": "ADC Card Item", "model": "adc-card-item" },
+              "item2": { "name": "ADC Card Item", "model": "adc-card-item" }
             }
           }
         }
