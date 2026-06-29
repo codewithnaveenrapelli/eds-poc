@@ -224,6 +224,19 @@ export default function decorate(block) {
 
   cardRows.forEach(({ row, cells }) => grid.append(buildCard(row, cells)));
 
+  // Author mode: show ghost placeholder card(s) so authors always have a visual
+  // cue to add more items. Uses data-aue-resource which is only present in UE canvas.
+  if (block.hasAttribute('data-aue-resource')) {
+    const numCols = parseInt(cols, 10) || 3;
+    // Empty grid → fill whole first row; otherwise show 1 ghost at the end
+    const ghostCount = cardRows.length === 0 ? numCols : 1;
+    for (let i = 0; i < ghostCount; i += 1) {
+      const ghost = document.createElement('div');
+      ghost.className = 'adc-card-placeholder';
+      grid.append(ghost);
+    }
+  }
+
   wrap.append(grid);
   block.append(wrap);
 }

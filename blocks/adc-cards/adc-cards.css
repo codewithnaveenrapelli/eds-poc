@@ -12,17 +12,22 @@
   gap: 1.5rem;
 }
 
-/* Empty state placeholder visible in the author canvas */
-.adc-cards .adc-cards-grid:not(:has(.adc-card-item))::before {
-  content: '+ Add ADC Card Items';
-  display: block;
-  padding: 2rem;
-  color: #888;
-  text-align: center;
+/* Ghost placeholder card — rendered by JS in UE author canvas only */
+.adc-cards .adc-card-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
   border: 2px dashed #ccc;
-  border-radius: 4px;
-  width: 100%;
-  grid-column: 1 / -1;
+  border-radius: 8px;
+  background: #fafafa;
+  color: #aaa;
+  font-size: 0.875rem;
+  pointer-events: none;
+}
+
+.adc-cards .adc-card-placeholder::before {
+  content: '+ Add ADC Card Item';
 }
 
 @media (width <= 640px) {
