@@ -76,5 +76,11 @@
       "button",
       "title"
     ]
+  },
+  {
+    "id": "adc-hero-banner",
+    "components": [
+      "adc-hero-button"
+    ]
   }
 ]

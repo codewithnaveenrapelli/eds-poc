@@ -326,8 +326,8 @@
           }
         },
         {
-          "title": "Hero",
-          "id": "hero",
+          "title": "ADC Hero Banner",
+          "id": "adc-hero-banner",
           "plugins": {
             "xwalk": {
               "page": {
@@ -335,7 +335,23 @@
                 "template": {
                   "name": "Hero",
                   "model": "adc-hero-banner",
+                  "filter": "adc-hero-banner",
                   "key-value": true
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "ADC Hero Button",
+          "id": "adc-hero-button",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "ADC Hero Button",
+                  "model": "adc-hero-button"
                 }
               }
             }
