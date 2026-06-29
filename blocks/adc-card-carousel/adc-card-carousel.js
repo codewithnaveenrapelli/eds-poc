@@ -11,12 +11,53 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 
 const CLICKABLE_TYPES = new Set(['clickable-card', 'support']);
 
+/**
+ * Extract an image element from a cell, handling all AEM rendering variants:
+ *  - <picture> (CDN-optimised, aem.page/live)
+ *  - bare <img> (author canvas)
+ *  - <a><img></a> (linked image)
+ *  - <a href="/content/dam/..."> (Remote Asset, author canvas)
+ *  - plain URL text (fallback)
+ */
+function extractImage(cell) {
+  if (!cell) return null;
+  const pic = cell.querySelector('picture');
+  if (pic) return pic;
+  let img = cell.querySelector('img');
+  if (img) return img;
+  const a = cell.querySelector('a');
+  if (a) {
+    img = a.querySelector('img');
+    if (img) return img;
+    const href = a.getAttribute('href') || '';
+    if (href && (href.startsWith('/') || href.startsWith('http'))) {
+      const el = document.createElement('img');
+      el.src = href;
+      el.alt = a.textContent.trim();
+      el.loading = 'lazy';
+      return el;
+    }
+  }
+  const src = cell.textContent.trim();
+  if (src && (src.startsWith('/') || src.startsWith('http'))) {
+    const el = document.createElement('img');
+    el.src = src;
+    el.alt = '';
+    el.loading = 'lazy';
+    return el;
+  }
+  return null;
+}
+
 function buildCarouselCard(row, cells) {
   const variant = cells[0]?.textContent.trim() || '';
   const imageCell = cells[1];
-  const contentCell = cells[3]?.firstElementChild;
+  // Content group: may be wrapped in an inner <div> (grouped fields) or flat
+  const raw4 = cells[3];
+  const firstChild4 = raw4?.firstElementChild;
+  const contentCell = (firstChild4 && firstChild4.tagName === 'DIV') ? firstChild4 : raw4;
 
-  const picture = imageCell?.querySelector('picture');
+  const picture = extractImage(imageCell);
 
   const card = document.createElement('div');
   card.className = `adc-carousel-card adc-carousel-card-type-${variant || 'default'}`;
