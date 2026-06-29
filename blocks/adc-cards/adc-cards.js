@@ -52,21 +52,23 @@ function buildCard(row, cells) {
   const body = document.createElement('div');
   body.className = 'adc-card-body';
 
-  const heading = contentCell?.querySelector('h1,h2,h3,h4,h5,h6');
-  const desc = contentCell?.querySelector('p');
-  const cta = contentCell?.querySelector('a');
+  // content_title and content_description are richtext fields — they produce <p> elements
+  // (not headings), so parse by position: first non-link = title, second = description.
+  const contentChildren = [...(contentCell?.children || [])];
+  const cta = contentChildren.find((el) => el.tagName === 'A');
+  const textEls = contentChildren.filter((el) => el.tagName !== 'A');
 
-  if (heading) {
+  if (textEls[0]) {
     const h = document.createElement('h3');
     h.className = 'adc-card-title';
-    h.innerHTML = heading.innerHTML;
+    h.innerHTML = textEls[0].innerHTML;
     body.append(h);
   }
 
-  if (desc) {
+  if (textEls[1]) {
     const p = document.createElement('p');
     p.className = 'adc-card-desc';
-    p.innerHTML = desc.innerHTML;
+    p.innerHTML = textEls[1].innerHTML;
     body.append(p);
   }
 

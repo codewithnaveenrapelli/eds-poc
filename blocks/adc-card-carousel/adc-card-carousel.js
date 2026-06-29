@@ -34,21 +34,22 @@ function buildCarouselCard(row, cells) {
   const body = document.createElement('div');
   body.className = 'adc-carousel-card-body';
 
-  const heading = contentCell?.querySelector('h1,h2,h3,h4,h5,h6');
-  const desc = contentCell?.querySelector('p');
-  const cta = contentCell?.querySelector('a');
+  // content_title and content_description are richtext fields — parse by position.
+  const contentChildren = [...(contentCell?.children || [])];
+  const cta = contentChildren.find((el) => el.tagName === 'A');
+  const textEls = contentChildren.filter((el) => el.tagName !== 'A');
 
-  if (heading) {
+  if (textEls[0]) {
     const p = document.createElement('p');
     p.className = 'adc-carousel-card-title';
-    p.innerHTML = heading.innerHTML;
+    p.innerHTML = textEls[0].innerHTML;
     body.append(p);
   }
 
-  if (desc) {
+  if (textEls[1]) {
     const d = document.createElement('p');
     d.className = 'adc-carousel-card-desc';
-    d.innerHTML = desc.innerHTML;
+    d.innerHTML = textEls[1].innerHTML;
     body.append(d);
   }
 
