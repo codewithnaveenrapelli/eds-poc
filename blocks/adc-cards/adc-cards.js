@@ -172,6 +172,52 @@ function buildCard(row, cells) {
   return card;
 }
 
+/**
+ * Build a skeleton ghost card that mirrors the real adc-card-item DOM structure.
+ * Only rendered in the UE author canvas to guide authors on what to add.
+ */
+function buildGhostCard() {
+  const card = document.createElement('div');
+  card.className = 'adc-card-item adc-card-placeholder';
+
+  const inner = document.createElement('div');
+  inner.className = 'adc-card-inner';
+
+  // Image area skeleton
+  const media = document.createElement('div');
+  media.className = 'adc-card-media';
+  const imgWrap = document.createElement('div');
+  imgWrap.className = 'adc-card-img';
+  const imgGhost = document.createElement('div');
+  imgGhost.className = 'adc-ghost-img';
+  imgWrap.append(imgGhost);
+  media.append(imgWrap);
+  inner.append(media);
+
+  // Body skeleton
+  const body = document.createElement('div');
+  body.className = 'adc-card-body';
+
+  const titleGhost = document.createElement('div');
+  titleGhost.className = 'adc-ghost-title';
+  body.append(titleGhost);
+
+  const descGhost = document.createElement('div');
+  descGhost.className = 'adc-ghost-desc';
+  body.append(descGhost);
+
+  const actions = document.createElement('div');
+  actions.className = 'adc-card-actions';
+  const btnGhost = document.createElement('div');
+  btnGhost.className = 'adc-ghost-btn';
+  actions.append(btnGhost);
+  body.append(actions);
+
+  inner.append(body);
+  card.append(inner);
+  return card;
+}
+
 export default function decorate(block) {
   const rows = [...block.querySelectorAll(':scope > div')];
   if (!rows.length) return;
@@ -224,16 +270,15 @@ export default function decorate(block) {
 
   cardRows.forEach(({ row, cells }) => grid.append(buildCard(row, cells)));
 
-  // Author mode: show ghost placeholder card(s) so authors always have a visual
-  // cue to add more items. Uses data-aue-resource which is only present in UE canvas.
+  // Author mode: show skeleton ghost card(s) matching the real adc-card-item structure
+  // so authors can see exactly what component they are about to add.
+  // data-aue-resource is only present in the UE author canvas, never on aem.page/live.
   if (block.hasAttribute('data-aue-resource')) {
     const numCols = parseInt(cols, 10) || 3;
-    // Empty grid → fill whole first row; otherwise show 1 ghost at the end
+    // Empty grid → fill first row; otherwise show 1 ghost at the end
     const ghostCount = cardRows.length === 0 ? numCols : 1;
     for (let i = 0; i < ghostCount; i += 1) {
-      const ghost = document.createElement('div');
-      ghost.className = 'adc-card-placeholder';
-      grid.append(ghost);
+      grid.append(buildGhostCard());
     }
   }
 

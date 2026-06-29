@@ -12,22 +12,50 @@
   gap: 1.5rem;
 }
 
-/* Ghost placeholder card — rendered by JS in UE author canvas only */
+/* Skeleton ghost card — same card shape, shimmer placeholders for each field */
 .adc-cards .adc-card-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 160px;
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  background: #fafafa;
-  color: #aaa;
-  font-size: 0.875rem;
+  opacity: 0.55;
   pointer-events: none;
 }
 
-.adc-cards .adc-card-placeholder::before {
-  content: '+ Add ADC Card Item';
+.adc-ghost-img {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(90deg, #ececec 25%, #d8d8d8 50%, #ececec 75%);
+  background-size: 200% 100%;
+  animation: adc-ghost-shimmer 1.4s ease-in-out infinite;
+}
+
+.adc-ghost-title {
+  height: 1rem;
+  width: 65%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #ececec 25%, #d8d8d8 50%, #ececec 75%);
+  background-size: 200% 100%;
+  animation: adc-ghost-shimmer 1.4s ease-in-out infinite;
+}
+
+.adc-ghost-desc {
+  height: 0.85rem;
+  width: 90%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #ececec 25%, #d8d8d8 50%, #ececec 75%);
+  background-size: 200% 100%;
+  animation: adc-ghost-shimmer 1.4s ease-in-out infinite;
+}
+
+.adc-ghost-btn {
+  height: 1rem;
+  width: 4rem;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #ececec 25%, #d8d8d8 50%, #ececec 75%);
+  background-size: 200% 100%;
+  animation: adc-ghost-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes adc-ghost-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 @media (width <= 640px) {
