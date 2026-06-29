@@ -55,8 +55,6 @@ function extractImage(cell) {
  * rendered as separate cells (cells[3]=title, cells[4]=desc, cells[5]=cta).
  */
 function getContentEls(cells) {
-  // eslint-disable-next-line no-console
-  console.log('[adc-cards] cells.length=', cells.length, cells.map((c, i) => `[${i}]:${c?.outerHTML?.slice(0, 120)}`));
   if (cells.length > 4) {
     // Separate cells — each content_* field in its own cell
     const [,,, cell3, cell4] = cells;
@@ -66,16 +64,18 @@ function getContentEls(cells) {
       ctaEl: cells.slice(5).reduce((found, c) => found || c?.querySelector('a'), null),
     };
   }
-  // Grouped cell — all content_* fields inside cells[3]
+  // Grouped cell — all content_* fields inside cells[3].
+  // xwalk may wrap each field in its own <div> sub-cell, so flatten one level:
+  //   <div> → [<div><p>title</p></div>, <div><p>desc</p></div>, <div><a>cta</a></div>]
   const [,,, raw4] = cells;
-  const firstChild4 = raw4?.firstElementChild;
-  // Content may be flat or inside a single <div> wrapper
-  const contentCell = (firstChild4?.tagName === 'DIV') ? firstChild4 : raw4;
-  const contentChildren = [...(contentCell?.children || [])];
-  // Deep search for <a> handles both direct <a> and <p><a></p> wrapping
-  const ctaEl = contentChildren.find((el) => el.tagName === 'A')
-    || contentCell?.querySelector('a');
-  const textEls = contentChildren.filter((el) => {
+  const flatEls = [];
+  [...(raw4?.children || [])].forEach((child) => {
+    if (child.tagName === 'DIV') flatEls.push(...child.children);
+    else flatEls.push(child);
+  });
+  // Deep fallback for <a> in case link is nested deeper
+  const ctaEl = flatEls.find((el) => el.tagName === 'A') || raw4?.querySelector('a');
+  const textEls = flatEls.filter((el) => {
     if (el.tagName === 'A') return false;
     // Skip <p> that only wraps a single link
     if (el.children.length === 1 && el.firstElementChild?.tagName === 'A') return false;
@@ -184,7 +184,7 @@ export default function decorate(block) {
     const cells = [...row.querySelectorAll(':scope > div')];
     if (cells.length === 1) {
       const val = cells[0].textContent.trim();
-      if (/^[234]$/.test(val)) {
+      if (/^\d+$/.test(val)) {
         cols = val;
       } else if (val) {
         sectionTitle = val;

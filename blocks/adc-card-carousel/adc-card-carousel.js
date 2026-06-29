@@ -63,13 +63,15 @@ function getContentEls(cells) {
       ctaEl: cells.slice(5).reduce((found, c) => found || c?.querySelector('a'), null),
     };
   }
+  // Grouped cell — flatten per-field <div> sub-cells one level
   const [,,, raw4] = cells;
-  const firstChild4 = raw4?.firstElementChild;
-  const contentCell = (firstChild4?.tagName === 'DIV') ? firstChild4 : raw4;
-  const contentChildren = [...(contentCell?.children || [])];
-  const ctaEl = contentChildren.find((el) => el.tagName === 'A')
-    || contentCell?.querySelector('a');
-  const textEls = contentChildren.filter((el) => {
+  const flatEls = [];
+  [...(raw4?.children || [])].forEach((child) => {
+    if (child.tagName === 'DIV') flatEls.push(...child.children);
+    else flatEls.push(child);
+  });
+  const ctaEl = flatEls.find((el) => el.tagName === 'A') || raw4?.querySelector('a');
+  const textEls = flatEls.filter((el) => {
     if (el.tagName === 'A') return false;
     if (el.children.length === 1 && el.firstElementChild?.tagName === 'A') return false;
     return true;

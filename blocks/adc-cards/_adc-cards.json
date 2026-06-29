@@ -29,16 +29,12 @@
           "value": ""
         },
         {
-          "component": "select",
+          "component": "text",
           "valueType": "string",
           "name": "columns",
           "value": "3",
-          "label": "Columns per row",
-          "options": [
-            { "name": "2 columns", "value": "2" },
-            { "name": "3 columns", "value": "3" },
-            { "name": "4 columns", "value": "4" }
-          ]
+          "label": "Columns per row (number)",
+          "placeholder": "e.g. 3"
         }
       ]
     }
