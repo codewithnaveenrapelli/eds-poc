@@ -312,6 +312,7 @@
         "component": "select",
         "valueType": "string",
         "name": "columns",
+        "value": "3",
         "label": "Columns per row",
         "options": [
           {

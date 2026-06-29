@@ -1,18 +1,27 @@
 // adc-cards: container block.
 // Parent config rows (1 cell): section title text or column count ("2"/"3"/"4").
-// Card-item child rows (4 cells): [classes-text | image | logo | content-group].
-//   Cell 0: variant text (classes field value: "logo", "information", etc. or empty)
-//   Cell 1: card image  (image + imageAlt field-collapsed into <picture>)
-//   Cell 2: logo image  (logo  + logoAlt  field-collapsed into <picture>)
-//   Cell 3: content     (content_title, content_description, content_cta+ctaText grouped)
+// Card-item children (adc-card-item, resourceType: block/v1/block) render as nested
+// block elements: <div class="block adc-card-item [variant]">
+//   The 'classes' field is applied as a CSS class on the nested block element (not a row).
+//   Field rows inside each nested block: [image-row | logo-row | content-row]
+//   Variant is read from the block element's classList.
 
 const CLICKABLE_TYPES = new Set(['clickable-card', 'support']);
 
-function buildCard(cells) {
-  const variant = cells[0]?.textContent.trim() || 'default';
-  const imageCell = cells[1];
-  const logoCell = cells[2];
-  const contentCell = cells[3]?.firstElementChild;
+function buildCard(row) {
+  // row = nested <div class="block adc-card-item [variant]"> element
+  const cells = [...row.querySelectorAll(':scope > div')];
+
+  // 'classes' field = CSS class on element, not a DOM row — read variant from classList
+  const variant = ['logo', 'information', 'support', 'patient-story', 'clickable-card']
+    .find((c) => row.classList.contains(c)) || '';
+
+  // Detect image/logo cells by <picture> presence; content cell by text/link elements
+  const pictureCells = cells.filter((c) => c.querySelector('picture'));
+  const contentCell = cells.find((c) => c.querySelector('h1,h2,h3,h4,h5,h6,p,a'))?.firstElementChild;
+
+  const imageCell = pictureCells[0];
+  const logoCell = pictureCells[1];
 
   const card = document.createElement('div');
   card.className = `adc-card-item${variant ? ` ${variant}` : ''}`;
@@ -104,16 +113,19 @@ export default function decorate(block) {
   const cardRows = [];
 
   rows.forEach((row) => {
-    const cells = [...row.querySelectorAll(':scope > div')];
-    if (cells.length === 1) {
-      const val = cells[0].textContent.trim();
-      if (/^[234]$/.test(val)) {
-        cols = val;
-      } else if (val) {
-        sectionTitle = val;
+    if (row.classList.contains('adc-card-item')) {
+      // nested card-item block — push the whole row for buildCard
+      cardRows.push(row);
+    } else {
+      const cells = [...row.querySelectorAll(':scope > div')];
+      if (cells.length === 1) {
+        const val = cells[0].textContent.trim();
+        if (/^[234]$/.test(val)) {
+          cols = val;
+        } else if (val) {
+          sectionTitle = val;
+        }
       }
-    } else if (cells.length >= 3) {
-      cardRows.push(cells);
     }
   });
 
@@ -133,7 +145,7 @@ export default function decorate(block) {
   grid.className = 'adc-cards-grid';
   grid.style.setProperty('--adc-cards-cols', cols);
 
-  cardRows.forEach((cells) => grid.append(buildCard(cells)));
+  cardRows.forEach((row) => grid.append(buildCard(row)));
 
   wrap.append(grid);
   block.append(wrap);
