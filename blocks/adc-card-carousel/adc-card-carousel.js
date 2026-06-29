@@ -1,3 +1,5 @@
+import { moveInstrumentation } from '../../scripts/scripts.js';
+
 // adc-card-carousel: container block.
 // Parent config rows (1 cell): title text or cardsPerScreen number (2–6).
 // Card-item children use resourceType block/v1/block/item — fields render as cells in
@@ -9,7 +11,7 @@
 
 const CLICKABLE_TYPES = new Set(['clickable-card', 'support']);
 
-function buildCarouselCard(cells) {
+function buildCarouselCard(row, cells) {
   const variant = cells[0]?.textContent.trim() || '';
   const imageCell = cells[1];
   const contentCell = cells[3]?.firstElementChild;
@@ -18,6 +20,9 @@ function buildCarouselCard(cells) {
 
   const card = document.createElement('div');
   card.className = `adc-carousel-card adc-carousel-card-type-${variant || 'default'}`;
+
+  // Move UE instrumentation so Universal Editor can still track this card after decoration.
+  moveInstrumentation(row, card);
 
   if (picture) {
     const imgWrap = document.createElement('div');
@@ -159,7 +164,7 @@ export default function decorate(block) {
         titleText = val;
       }
     } else if (cells.length >= 3) {
-      cardRows.push(cells);
+      cardRows.push({ row, cells });
     }
   });
 
@@ -174,6 +179,6 @@ export default function decorate(block) {
 
   if (!cardRows.length) return;
 
-  const cards = cardRows.map((cells) => buildCarouselCard(cells));
+  const cards = cardRows.map(({ row, cells }) => buildCarouselCard(row, cells));
   renderCarousel(block, cards, cardsPerScreen);
 }

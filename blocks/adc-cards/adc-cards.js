@@ -1,3 +1,5 @@
+import { moveInstrumentation } from '../../scripts/scripts.js';
+
 // adc-cards: container block.
 // Parent config rows (1 cell): section title text or column count ("2"/"3"/"4").
 // Card-item children use resourceType block/v1/block/item — fields render as cells in
@@ -9,7 +11,7 @@
 
 const CLICKABLE_TYPES = new Set(['clickable-card', 'support']);
 
-function buildCard(cells) {
+function buildCard(row, cells) {
   const variant = cells[0]?.textContent.trim() || '';
   const imageCell = cells[1];
   const logoCell = cells[2];
@@ -21,6 +23,9 @@ function buildCard(cells) {
 
   const card = document.createElement('div');
   card.className = `adc-card-item${variant ? ` ${variant}` : ''}`;
+  // Move UE instrumentation (data-aue-*) from the original row to the card element
+  // so Universal Editor can still track and select this card item after decoration.
+  moveInstrumentation(row, card);
 
   const inner = document.createElement('div');
   inner.className = 'adc-card-inner';
@@ -116,7 +121,7 @@ export default function decorate(block) {
         sectionTitle = val;
       }
     } else if (cells.length >= 3) {
-      cardRows.push(cells);
+      cardRows.push({ row, cells });
     }
   });
 
@@ -136,7 +141,7 @@ export default function decorate(block) {
   grid.className = 'adc-cards-grid';
   grid.style.setProperty('--adc-cards-cols', cols);
 
-  cardRows.forEach((cells) => grid.append(buildCard(cells)));
+  cardRows.forEach(({ row, cells }) => grid.append(buildCard(row, cells)));
 
   wrap.append(grid);
   block.append(wrap);
