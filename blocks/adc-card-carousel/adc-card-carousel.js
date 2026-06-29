@@ -49,15 +49,40 @@ function extractImage(cell) {
   return null;
 }
 
+/**
+ * Extract title, description, and CTA from the content cells.
+ * In xwalk block/item, content_* fields may be grouped (cells[3]) or
+ * rendered as separate cells (cells[3]=title, cells[4]=desc, cells[5]=cta).
+ */
+function getContentEls(cells) {
+  if (cells.length > 4) {
+    const [,,, cell3, cell4] = cells;
+    return {
+      titleEl: cell3?.firstElementChild,
+      descEl: cell4?.firstElementChild,
+      ctaEl: cells.slice(5).reduce((found, c) => found || c?.querySelector('a'), null),
+    };
+  }
+  const [,,, raw4] = cells;
+  const firstChild4 = raw4?.firstElementChild;
+  const contentCell = (firstChild4?.tagName === 'DIV') ? firstChild4 : raw4;
+  const contentChildren = [...(contentCell?.children || [])];
+  const ctaEl = contentChildren.find((el) => el.tagName === 'A')
+    || contentCell?.querySelector('a');
+  const textEls = contentChildren.filter((el) => {
+    if (el.tagName === 'A') return false;
+    if (el.children.length === 1 && el.firstElementChild?.tagName === 'A') return false;
+    return true;
+  });
+  const [titleEl, descEl] = textEls;
+  return { titleEl, descEl, ctaEl };
+}
+
 function buildCarouselCard(row, cells) {
   const variant = cells[0]?.textContent.trim() || '';
   const imageCell = cells[1];
-  // Content group: may be wrapped in an inner <div> (grouped fields) or flat
-  const raw4 = cells[3];
-  const firstChild4 = raw4?.firstElementChild;
-  const contentCell = (firstChild4 && firstChild4.tagName === 'DIV') ? firstChild4 : raw4;
-
   const picture = extractImage(imageCell);
+  const { titleEl, descEl, ctaEl } = getContentEls(cells);
 
   const card = document.createElement('div');
   card.className = `adc-carousel-card adc-carousel-card-type-${variant || 'default'}`;
@@ -75,31 +100,26 @@ function buildCarouselCard(row, cells) {
   const body = document.createElement('div');
   body.className = 'adc-carousel-card-body';
 
-  // content_title and content_description are richtext fields — parse by position.
-  const contentChildren = [...(contentCell?.children || [])];
-  const cta = contentChildren.find((el) => el.tagName === 'A');
-  const textEls = contentChildren.filter((el) => el.tagName !== 'A');
-
-  if (textEls[0]) {
+  if (titleEl) {
     const p = document.createElement('p');
     p.className = 'adc-carousel-card-title';
-    p.innerHTML = textEls[0].innerHTML;
+    p.innerHTML = titleEl.innerHTML;
     body.append(p);
   }
 
-  if (textEls[1]) {
+  if (descEl) {
     const d = document.createElement('p');
     d.className = 'adc-carousel-card-desc';
-    d.innerHTML = textEls[1].innerHTML;
+    d.innerHTML = descEl.innerHTML;
     body.append(d);
   }
 
-  if (!CLICKABLE_TYPES.has(variant) && cta) {
+  if (!CLICKABLE_TYPES.has(variant) && ctaEl) {
     const a = document.createElement('a');
-    a.href = cta.href;
+    a.href = ctaEl.href;
     a.className = 'adc-carousel-card-link';
-    a.textContent = cta.textContent.trim();
-    if (cta.target === '_blank') {
+    a.textContent = ctaEl.textContent.trim();
+    if (ctaEl.target === '_blank') {
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
     }
@@ -108,11 +128,11 @@ function buildCarouselCard(row, cells) {
 
   card.append(body);
 
-  if (CLICKABLE_TYPES.has(variant) && cta) {
+  if (CLICKABLE_TYPES.has(variant) && ctaEl) {
     const wrap = document.createElement('a');
-    wrap.href = cta.href;
+    wrap.href = ctaEl.href;
     wrap.className = 'adc-carousel-card-link-wrap';
-    if (cta.target === '_blank') {
+    if (ctaEl.target === '_blank') {
       wrap.target = '_blank';
       wrap.rel = 'noopener noreferrer';
     }
