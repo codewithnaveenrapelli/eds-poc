@@ -40,6 +40,15 @@
     ]
   },
   {
+    "id": "adc-card-item",
+    "components": [
+      "adc-card-image",
+      "adc-card-logo",
+      "adc-hero-text",
+      "adc-button"
+    ]
+  },
+  {
     "id": "adc-cards",
     "components": [
       "adc-card-item"
