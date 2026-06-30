@@ -5,16 +5,18 @@
 /* 1. CSS custom properties */
 .hero {
   --hero-bg-light: #fff;
-  --hero-header-color: #1a1a1a;
+  --hero-header-color: #222731;
   --hero-header-font-weight: 700;
-  --hero-header-h1-border-color: #ffca00;
+  --hero-header-h1-border-color: #ffd100;
+  --hero-body-margin-top: 1rem;
   --hero-content-default-width: 50%;
   --hero-extras-margin-top: 1rem;
+  --hero-extras-between-spacing: 1.5rem;
   --hero-media-image-object-fit: cover;
-  --hero-media-image-object-position: center;
-  --hero-short-background-color: #ffca00;
-  --hero-short-background-linear: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
-  --hero-image-circle-bg: #f5f5f5;
+  --hero-media-image-object-position: center center;
+  --hero-short-background-color: #ffd100;
+  --hero-short-background-linear: linear-gradient(180deg, #ffd100 50%, #fff0aa 100%);
+  --hero-image-circle-bg: #f7f7f9;
 
   position: relative;
   z-index: 0;
@@ -155,6 +157,10 @@
   .hero .hero-content {
     width: var(--hero-content-default-width);
   }
+}
+
+.hero .hero-body {
+  margin-top: var(--hero-body-margin-top);
 }
 
 .hero .hero-pretitle {
@@ -315,32 +321,75 @@
   margin-top: 1rem;
 }
 
+/* 5b. Tall/medium base section heights (non-circle variants) */
+.hero.hero-tall .hero-section {
+  height: 520px;
+}
+
+@media (width >= 768px) {
+  .hero.hero-tall .hero-section {
+    height: 900px;
+  }
+}
+
+@media (width >= 992px) {
+  .hero.hero-tall .hero-section {
+    height: 640px;
+    max-height: 640px;
+  }
+
+  .hero.hero-tall .hero-content {
+    padding-top: 104px;
+  }
+}
+
+.hero.hero-medium .hero-section {
+  height: 480px;
+}
+
+@media (width >= 768px) {
+  .hero.hero-medium .hero-section {
+    height: 700px;
+  }
+}
+
+@media (width >= 992px) {
+  .hero.hero-medium .hero-section {
+    height: 500px;
+    max-height: 500px;
+  }
+
+  .hero.hero-medium .hero-content {
+    padding-top: 80px;
+  }
+}
+
 /* 6. Copy-inside-circle variant */
-.hero .hero-copy-inside-circle {
+.hero.hero-copy-inside-circle {
   height: auto;
   overflow: visible;
 }
 
-.hero .hero-copy-inside-circle .hero-section {
+.hero.hero-copy-inside-circle .hero-section {
   height: 800px;
 }
 
-.hero .hero-copy-inside-circle .hero-section .hero-container {
+.hero.hero-copy-inside-circle .hero-section .hero-container {
   position: initial;
   height: 100%;
 }
 
-.hero .hero-copy-inside-circle .hero-section .hero-container .row {
+.hero.hero-copy-inside-circle .hero-section .hero-container .row {
   height: 100%;
 }
 
 @media (width >= 992px) {
-  .hero .hero-copy-inside-circle .hero-section .hero-container .row {
+  .hero.hero-copy-inside-circle .hero-section .hero-container .row {
     align-items: center;
   }
 }
 
-.hero .hero-copy-inside-circle .hero-column {
+.hero.hero-copy-inside-circle .hero-column {
   transform: translateX(-50%);
   left: 50%;
   padding: 0;
@@ -348,14 +397,14 @@
 }
 
 @media (width >= 992px) {
-  .hero .hero-copy-inside-circle .hero-column {
+  .hero.hero-copy-inside-circle .hero-column {
     padding: 0 15px;
     transform: none;
     left: unset;
   }
 }
 
-.hero .hero-copy-inside-circle .hero-content {
+.hero.hero-copy-inside-circle .hero-content {
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -367,12 +416,12 @@
 }
 
 @media (width >= 992px) {
-  .hero .hero-copy-inside-circle .hero-content {
+  .hero.hero-copy-inside-circle .hero-content {
     align-items: start;
   }
 }
 
-.hero .hero-copy-inside-circle .hero-content::before {
+.hero.hero-copy-inside-circle .hero-content::before {
   background: var(--hero-bg-light);
   border-radius: 100%;
   content: '';
@@ -385,14 +434,14 @@
 }
 
 @media (768px <= width <= 1199px) {
-  .hero .hero-copy-inside-circle .hero-content::before {
+  .hero.hero-copy-inside-circle .hero-content::before {
     width: 510px;
     height: 490px;
   }
 }
 
 @media (width >= 992px) {
-  .hero .hero-copy-inside-circle .hero-content::before {
+  .hero.hero-copy-inside-circle .hero-content::before {
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
@@ -401,21 +450,21 @@
   }
 }
 
-.hero .hero-copy-inside-circle .hero-body {
+.hero.hero-copy-inside-circle .hero-body {
   position: relative;
   text-align: center;
   margin-top: 0;
   color: var(--hero-header-color);
 }
 
-.hero .hero-copy-inside-circle .hero-header {
+.hero.hero-copy-inside-circle .hero-header {
   text-align: center;
   position: relative;
   color: var(--hero-header-color);
   margin-bottom: 0;
 }
 
-.hero .hero-copy-inside-circle .hero-header::after {
+.hero.hero-copy-inside-circle .hero-header::after {
   content: '';
   left: 50%;
   top: 100%;
@@ -428,12 +477,12 @@
   border-radius: 1rem;
 }
 
-.hero .hero-copy-inside-circle .hero-subtitle * {
+.hero.hero-copy-inside-circle .hero-subtitle * {
   margin-bottom: 0;
   text-align: center;
 }
 
-.hero .hero-copy-inside-circle .hero-extras {
+.hero.hero-copy-inside-circle .hero-extras {
   width: 100%;
   justify-content: center;
   margin-top: var(--hero-extras-margin-top);
@@ -441,9 +490,9 @@
   top: 500px;
 }
 
-.hero .hero-copy-inside-circle .hero-media,
-.hero .hero-copy-inside-circle .hero-image,
-.hero .hero-copy-inside-circle .hero-media img {
+.hero.hero-copy-inside-circle .hero-media,
+.hero.hero-copy-inside-circle .hero-image,
+.hero.hero-copy-inside-circle .hero-media img {
   position: absolute;
   top: 0;
   left: 0;
@@ -452,26 +501,26 @@
 }
 
 @media (width >= 992px) {
-  .hero .hero-copy-inside-circle .hero-body {
+  .hero.hero-copy-inside-circle .hero-body {
     text-align: left;
   }
 
-  .hero .hero-copy-inside-circle .hero-header {
+  .hero.hero-copy-inside-circle .hero-header {
     text-align: left;
   }
 
-  .hero .hero-copy-inside-circle .hero-header::after {
+  .hero.hero-copy-inside-circle .hero-header::after {
     top: 100%;
     left: unset;
     transform: unset;
     margin: 24px 0;
   }
 
-  .hero .hero-copy-inside-circle .hero-subtitle * {
+  .hero.hero-copy-inside-circle .hero-subtitle * {
     text-align: left;
   }
 
-  .hero .hero-copy-inside-circle .hero-extras {
+  .hero.hero-copy-inside-circle .hero-extras {
     justify-content: left;
     position: relative;
     flex-wrap: nowrap;
@@ -479,57 +528,57 @@
   }
 }
 
-.hero .hero-copy-inside-circle.hero-tall .hero-section {
+.hero.hero-copy-inside-circle.hero-tall .hero-section {
   height: 800px;
 }
 
 @media (width >= 992px) {
-  .hero .hero-copy-inside-circle.hero-tall .hero-section {
+  .hero.hero-copy-inside-circle.hero-tall .hero-section {
     height: 640px;
     max-height: 640px;
   }
 }
 
-.hero .hero-copy-inside-circle.hero-medium .hero-section {
+.hero.hero-copy-inside-circle.hero-medium .hero-section {
   height: 800px;
 }
 
 @media (width >= 992px) {
-  .hero .hero-copy-inside-circle.hero-medium .hero-section {
+  .hero.hero-copy-inside-circle.hero-medium .hero-section {
     height: 500px;
     max-height: 500px;
   }
 
-  .hero .hero-copy-inside-circle.hero-medium .hero-section .hero-content {
+  .hero.hero-copy-inside-circle.hero-medium .hero-section .hero-content {
     padding: 15% 0 0;
   }
 }
 
 /* 7. Image-in-circle variant */
-.hero .hero-medium.hero-image-in-circle {
+.hero.hero-medium.hero-image-in-circle {
   padding: 0;
   height: auto;
   position: relative;
   background: var(--hero-bg-light);
 }
 
-.hero .hero-medium.hero-image-in-circle .hero-section {
+.hero.hero-medium.hero-image-in-circle .hero-section {
   height: auto;
   overflow: hidden;
   position: relative;
   z-index: 0;
 }
 
-.hero .hero-medium.hero-image-in-circle .hero-content {
+.hero.hero-medium.hero-image-in-circle .hero-content {
   padding: 24px 16px 0;
   width: 100%;
 }
 
-.hero .hero-medium.hero-image-in-circle .hero-content .hero-extras {
+.hero.hero-medium.hero-image-in-circle .hero-content .hero-extras {
   margin-top: 16px;
 }
 
-.hero .hero-medium.hero-image-in-circle .hero-media-circle {
+.hero.hero-medium.hero-image-in-circle .hero-media-circle {
   right: 0;
   bottom: -20px;
   left: 0;
@@ -537,14 +586,14 @@
   height: auto;
 }
 
-.hero .hero-medium.hero-image-in-circle .hero-media-circle .hero-image {
+.hero.hero-medium.hero-image-in-circle .hero-media-circle .hero-image {
   display: flex;
   align-items: center;
   position: relative;
   justify-content: center;
 }
 
-.hero .hero-medium.hero-image-in-circle .hero-media-circle img {
+.hero.hero-medium.hero-image-in-circle .hero-media-circle img {
   width: 375px;
   height: 375px;
   border-radius: 100%;
@@ -552,31 +601,31 @@
   object-fit: cover;
 }
 
-.hero .hero-medium.hero-image-in-circle .hero-section-overlap {
+.hero.hero-medium.hero-image-in-circle .hero-section-overlap {
   background: unset;
 }
 
-.hero .hero-medium.hero-image-in-circle .hero-section-overlap .hero-overlap-image {
+.hero.hero-medium.hero-image-in-circle .hero-section-overlap .hero-overlap-image {
   text-align: right;
 }
 
-.hero .hero-medium.hero-image-in-circle.hero-bg-yellow-gradient .hero-section {
+.hero.hero-medium.hero-image-in-circle.hero-bg-yellow-gradient .hero-section {
   background: var(--hero-short-background-linear);
 }
 
-.hero .hero-medium.hero-image-in-circle.hero-bg-gray .hero-section {
+.hero.hero-medium.hero-image-in-circle.hero-bg-gray .hero-section {
   background: var(--hero-image-circle-bg);
 }
 
 @media (768px <= width <= 1199px) {
-  .hero .hero-medium.hero-image-in-circle .hero-media-circle img {
+  .hero.hero-medium.hero-image-in-circle .hero-media-circle img {
     width: 480px;
     height: 480px;
   }
 }
 
 @media (width >= 992px) {
-  .hero .hero-medium.hero-image-in-circle .hero-content {
+  .hero.hero-medium.hero-image-in-circle .hero-content {
     height: auto;
     min-height: 500px;
     display: flex;
@@ -587,7 +636,7 @@
     width: 50%;
   }
 
-  .hero .hero-medium.hero-image-in-circle .hero-media-circle {
+  .hero.hero-medium.hero-image-in-circle .hero-media-circle {
     position: absolute;
     height: 100%;
     width: 50%;
@@ -595,11 +644,11 @@
     left: auto;
   }
 
-  .hero .hero-medium.hero-image-in-circle .hero-media-circle .hero-image {
+  .hero.hero-medium.hero-image-in-circle .hero-media-circle .hero-image {
     position: absolute;
   }
 
-  .hero .hero-medium.hero-image-in-circle .hero-media-circle img {
+  .hero.hero-medium.hero-image-in-circle .hero-media-circle img {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -610,36 +659,36 @@
     height: 720px;
   }
 
-  .hero .hero-medium.hero-image-in-circle .hero-section-overlap {
+  .hero.hero-medium.hero-image-in-circle .hero-section-overlap {
     background: var(--hero-bg-light);
   }
 
-  .hero .hero-medium.hero-image-in-circle .hero-section-overlap .hero-overlap-logo {
+  .hero.hero-medium.hero-image-in-circle .hero-section-overlap .hero-overlap-logo {
     right: 0;
   }
 
-  .hero .hero-medium.hero-image-in-circle .hero-section-overlap .hero-overlap-image {
+  .hero.hero-medium.hero-image-in-circle .hero-section-overlap .hero-overlap-image {
     text-align: left;
     margin-top: -75px;
   }
 
-  .hero .hero-medium.hero-image-in-circle .hero-section-overlap .hero-overlap-image img {
+  .hero.hero-medium.hero-image-in-circle .hero-section-overlap .hero-overlap-image img {
     max-width: 280px;
     max-height: 280px;
     width: 100%;
     height: 100%;
   }
 
-  .hero .hero-medium.hero-image-in-circle.hero-extra-padding .hero-content {
+  .hero.hero-medium.hero-image-in-circle.hero-extra-padding .hero-content {
     padding-bottom: 100px;
   }
 }
 
 /* 8. Background colour variants */
-.hero .hero-bg-yellow-gradient {
+.hero.hero-bg-yellow-gradient {
   background: var(--hero-short-background-linear);
 }
 
-.hero .hero-bg-gray {
+.hero.hero-bg-gray {
   background-color: var(--hero-image-circle-bg);
 }
