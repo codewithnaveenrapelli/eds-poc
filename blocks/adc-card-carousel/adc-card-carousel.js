@@ -2,8 +2,8 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 
 // adc-card-carousel: container block.
 // Parent config rows (1 cell): title text or cardsPerScreen number (2–6).
-// Card-item children use resourceType block/v1/block/item — fields render as cells in
-// a single row (not a nested block element). Cell structure per card:
+// Card-item children use resourceType block/v1/block/item — fields render as
+// cells in a single row. Cell structure per card:
 //   cells[0]: variant text  (classes field → text cell for block/item children)
 //   cells[1]: card image    (image + imageAlt field-collapsed into <picture>)
 //   cells[2]: logo image    (logo  + logoAlt  field-collapsed into <picture>)
@@ -12,12 +12,12 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 const CLICKABLE_TYPES = new Set(['clickable-card', 'support']);
 
 /**
- * Extract an image element from a cell, handling all AEM rendering variants:
- *  - <picture> (CDN-optimised, aem.page/live)
- *  - bare <img> (author canvas)
- *  - <a><img></a> (linked image)
- *  - <a href="/content/dam/..."> (Remote Asset, author canvas)
- *  - plain URL text (fallback)
+ * Extract an image/picture element from a cell, handling all AEM render variants:
+ * - <picture> (CDN-optimised on aem.page/live)
+ * - bare <img> (author canvas)
+ * - <a><img></a> (linked image)
+ * - <a href="/content/dam/..."> (Remote Asset, author canvas)
+ * - plain URL text (last resort fallback)
  */
 function extractImage(cell) {
   if (!cell) return null;
@@ -56,15 +56,14 @@ function extractImage(cell) {
  */
 function getContentEls(cells) {
   if (cells.length > 4) {
-    const [,,, cell3, cell4] = cells;
+    const [, , , cell3, cell4] = cells;
     return {
       titleEl: cell3?.firstElementChild,
       descEl: cell4?.firstElementChild,
       ctaEl: cells.slice(5).reduce((found, c) => found || c?.querySelector('a'), null),
     };
   }
-  // Grouped cell — flatten per-field <div> sub-cells one level
-  const [,,, raw4] = cells;
+  const raw4 = cells[3];
   const flatEls = [];
   [...(raw4?.children || [])].forEach((child) => {
     if (child.tagName === 'DIV') flatEls.push(...child.children);
@@ -82,50 +81,64 @@ function getContentEls(cells) {
 
 function buildCarouselCard(row, cells) {
   const variant = cells[0]?.textContent.trim() || '';
-  const imageCell = cells[1];
-  const picture = extractImage(imageCell);
+  const picture = extractImage(cells[1]);
+  const logo = extractImage(cells[2]);
   const { titleEl, descEl, ctaEl } = getContentEls(cells);
 
   const card = document.createElement('div');
-  card.className = `adc-carousel-card adc-carousel-card-type-${variant || 'default'}`;
+  const typeClass = variant ? `adc-carousel-card-type-${variant}` : 'adc-carousel-card-type-default';
+  card.className = `adc-carousel-card ${typeClass}`;
 
-  // Move UE instrumentation so Universal Editor can still track this card after decoration.
   moveInstrumentation(row, card);
 
-  if (picture) {
-    const imgWrap = document.createElement('div');
-    imgWrap.className = 'adc-carousel-card-img';
-    imgWrap.append(picture);
-    card.append(imgWrap);
+  if (picture || logo) {
+    const mediaWrap = document.createElement('div');
+    mediaWrap.className = 'adc-carousel-card-media';
+    if (picture) {
+      const imgEl = picture.querySelector('img');
+      if (imgEl) imgEl.loading = 'lazy';
+      mediaWrap.append(picture);
+    }
+    if (logo) {
+      const logoWrap = document.createElement('div');
+      logoWrap.className = 'adc-carousel-card-logo';
+      logoWrap.append(logo.querySelector('img') || logo);
+      mediaWrap.append(logoWrap);
+    }
+    card.append(mediaWrap);
   }
 
   const body = document.createElement('div');
   body.className = 'adc-carousel-card-body';
 
   if (titleEl) {
-    const p = document.createElement('p');
-    p.className = 'adc-carousel-card-title';
-    p.innerHTML = titleEl.innerHTML;
-    body.append(p);
+    const h = document.createElement('p');
+    h.className = 'adc-carousel-card-title';
+    h.innerHTML = titleEl.innerHTML;
+    body.append(h);
   }
 
   if (descEl) {
-    const d = document.createElement('p');
+    const d = document.createElement('div');
     d.className = 'adc-carousel-card-desc';
     d.innerHTML = descEl.innerHTML;
     body.append(d);
   }
 
   if (!CLICKABLE_TYPES.has(variant) && ctaEl) {
+    const cta = document.createElement('div');
+    cta.className = 'adc-carousel-card-cta';
     const a = document.createElement('a');
     a.href = ctaEl.href;
     a.className = 'adc-carousel-card-link';
     a.textContent = ctaEl.textContent.trim();
+    a.setAttribute('aria-label', ctaEl.textContent.trim());
     if (ctaEl.target === '_blank') {
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
     }
-    body.append(a);
+    cta.append(a);
+    body.append(cta);
   }
 
   card.append(body);
@@ -134,75 +147,129 @@ function buildCarouselCard(row, cells) {
     const wrap = document.createElement('a');
     wrap.href = ctaEl.href;
     wrap.className = 'adc-carousel-card-link-wrap';
+    wrap.setAttribute('aria-label', titleEl?.textContent?.trim() || ctaEl.textContent.trim());
     if (ctaEl.target === '_blank') {
       wrap.target = '_blank';
       wrap.rel = 'noopener noreferrer';
     }
-    wrap.append(...card.childNodes);
+    wrap.append(...[...card.childNodes]);
     card.append(wrap);
   }
 
   return card;
 }
 
+/**
+ * Render the full carousel: track, prev/next arrows, and pill-indicator dots.
+ * Navigation is page-based — each page shows `perScreen` cards.
+ * Dots = ceil(total / perScreen). Arrows hidden on mobile via CSS.
+ * Touch swipe supported on all viewports.
+ */
 function renderCarousel(block, cards, perScreen) {
-  const wrapper = document.createElement('div');
-  wrapper.className = 'adc-carousel-wrapper';
+  const total = cards.length;
+  const totalPages = Math.ceil(total / perScreen);
+  let currentPage = 0;
 
+  // Build track ---
   const track = document.createElement('div');
   track.className = 'adc-carousel-track';
-  track.style.setProperty('--carousel-per-screen', String(perScreen));
+  track.setAttribute('aria-live', 'polite');
+  track.style.setProperty('--adc-carousel-total', String(total));
 
-  cards.forEach((cardEl) => {
+  cards.forEach((cardEl, idx) => {
     const item = document.createElement('div');
     item.className = 'adc-carousel-item';
+    item.setAttribute('aria-hidden', idx >= perScreen ? 'true' : 'false');
     item.append(cardEl);
     track.append(item);
   });
 
+  const wrapper = document.createElement('div');
+  wrapper.className = 'adc-carousel-wrapper';
   wrapper.append(track);
 
-  const total = cards.length;
-  let current = 0;
+  // Build pill dots (event listeners added after goTo is defined) ---
+  const dotsEl = document.createElement('div');
+  dotsEl.className = 'adc-carousel-dots';
+  dotsEl.setAttribute('role', 'tablist');
+  dotsEl.setAttribute('aria-label', 'Carousel navigation');
 
-  const goTo = (idx) => {
-    current = Math.max(0, Math.min(idx, total - perScreen));
-    track.style.transform = `translateX(-${(current / total) * 100}%)`;
-    block.querySelectorAll('.adc-carousel-dot').forEach((d, i) => {
-      d.classList.toggle('adc-carousel-dot-active', i === current);
-    });
-  };
-
-  const prev = document.createElement('button');
-  prev.className = 'adc-carousel-btn adc-carousel-btn-prev';
-  prev.type = 'button';
-  prev.setAttribute('aria-label', 'Previous');
-  prev.innerHTML = '&#8249;';
-  prev.addEventListener('click', () => goTo(current - 1));
-
-  const next = document.createElement('button');
-  next.className = 'adc-carousel-btn adc-carousel-btn-next';
-  next.type = 'button';
-  next.setAttribute('aria-label', 'Next');
-  next.innerHTML = '&#8250;';
-  next.addEventListener('click', () => goTo(current + 1));
-
-  const dots = document.createElement('div');
-  dots.className = 'adc-carousel-dots';
-
-  for (let i = 0; i < total; i += 1) {
+  const dotBtns = [];
+  for (let i = 0; i < totalPages; i += 1) {
     const dot = document.createElement('button');
-    dot.className = `adc-carousel-dot${i === 0 ? ' adc-carousel-dot-active' : ''}`;
     dot.type = 'button';
-    dot.setAttribute('aria-label', `Go to card ${i + 1}`);
-    dot.addEventListener('click', () => goTo(i));
-    dots.append(dot);
+    dot.className = `adc-carousel-dot${i === 0 ? ' adc-carousel-dot-active' : ''}`;
+    dot.setAttribute('role', 'tab');
+    dot.setAttribute('aria-label', `Page ${i + 1} of ${totalPages}`);
+    dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    const indicator = document.createElement('span');
+    indicator.className = 'adc-carousel-dot-indicator';
+    dot.append(indicator);
+    dotsEl.append(dot);
+    dotBtns.push(dot);
   }
 
-  block.textContent = '';
+  // Build arrow buttons ---
+  const prevBtn = document.createElement('button');
+  prevBtn.type = 'button';
+  prevBtn.className = 'adc-carousel-btn adc-carousel-btn-prev';
+  prevBtn.setAttribute('aria-label', 'Previous');
+  prevBtn.disabled = true;
+  prevBtn.innerHTML = '<span aria-hidden="true">&#8249;</span>';
 
+  const nextBtn = document.createElement('button');
+  nextBtn.type = 'button';
+  nextBtn.className = 'adc-carousel-btn adc-carousel-btn-next';
+  nextBtn.setAttribute('aria-label', 'Next');
+  nextBtn.disabled = totalPages <= 1;
+  nextBtn.innerHTML = '<span aria-hidden="true">&#8250;</span>';
+
+  // Navigation — defined before event listeners that reference it ---
+  function goTo(page) {
+    currentPage = Math.max(0, Math.min(page, totalPages - 1));
+    const startCard = currentPage * perScreen;
+
+    track.style.transform = `translateX(-${(startCard / total) * 100}%)`;
+
+    [...track.querySelectorAll('.adc-carousel-item')].forEach((item, idx) => {
+      item.setAttribute('aria-hidden', (idx >= startCard && idx < startCard + perScreen) ? 'false' : 'true');
+    });
+
+    dotBtns.forEach((d, i) => {
+      const active = i === currentPage;
+      d.classList.toggle('adc-carousel-dot-active', active);
+      d.setAttribute('aria-selected', String(active));
+    });
+
+    prevBtn.disabled = currentPage === 0;
+    nextBtn.disabled = currentPage === totalPages - 1;
+  }
+
+  // Wire up event listeners ---
+  dotBtns.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+  prevBtn.addEventListener('click', () => goTo(currentPage - 1));
+  nextBtn.addEventListener('click', () => goTo(currentPage + 1));
+
+  // Touch swipe ---
+  let touchStartX = 0;
+  wrapper.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].clientX;
+  }, { passive: true });
+  wrapper.addEventListener('touchend', (e) => {
+    const delta = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(delta) > 50) goTo(currentPage + (delta < 0 ? 1 : -1));
+  }, { passive: true });
+
+  // Keyboard on wrapper ---
+  wrapper.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') goTo(currentPage - 1);
+    else if (e.key === 'ArrowRight') goTo(currentPage + 1);
+  });
+
+  // Assemble ---
+  block.textContent = '';
   if (total > 1) {
-    block.append(prev, wrapper, next, dots);
+    block.append(prevBtn, wrapper, nextBtn, dotsEl);
   } else {
     block.append(wrapper);
   }
@@ -219,7 +286,6 @@ export default function decorate(block) {
   allRows.forEach((row) => {
     const cells = [...row.querySelectorAll(':scope > div')];
     if (cells.length === 1) {
-      // Config row: title or cardsPerScreen count
       const val = cells[0].textContent.trim();
       const num = parseInt(val, 10);
       if (!Number.isNaN(num) && num >= 2 && num <= 6) {
@@ -232,11 +298,11 @@ export default function decorate(block) {
     }
   });
 
-  block.style.setProperty('--cards-per-screen', String(cardsPerScreen));
+  block.style.setProperty('--adc-carousel-per-screen', String(cardsPerScreen));
 
   if (titleText) {
     const h = document.createElement('h2');
-    h.className = 'adc-carousel-title';
+    h.className = 'adc-carousel-heading';
     h.textContent = titleText;
     block.prepend(h);
   }
