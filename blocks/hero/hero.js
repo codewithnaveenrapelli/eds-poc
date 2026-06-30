@@ -4,6 +4,8 @@ const KNOWN_FIELDS = new Set([
   'title', 'subtitle', 'description', 'id',
   'overlaplogo', 'overlapimage', 'overlapcopy',
   'mediumoverlapimage', 'mediumoverlapcopy',
+  'button1label', 'button1link', 'button1action', 'button1style',
+  'button2label', 'button2link', 'button2action', 'button2style',
 ]);
 
 function extractImage(cell) {
@@ -185,15 +187,29 @@ export default function decorate(block) {
     content.append(desc);
   }
 
-  if (buttonRows.length) {
+  const btns = [
+    {
+      label: props.button1label,
+      link: props.button1link,
+      action: props.button1action,
+      style: props.button1style,
+    },
+    {
+      label: props.button2label,
+      link: props.button2link,
+      action: props.button2action,
+      style: props.button2style,
+    },
+  ].filter(({ label, link }) => label?.textContent.trim() || link?.querySelector('a'));
+
+  if (btns.length) {
     const extras = document.createElement('div');
     extras.className = 'hero-extras';
-    buttonRows.forEach((btnRow) => {
-      const cells = [...btnRow.querySelectorAll(':scope > div')];
-      const text = cells[0]?.textContent.trim() || '';
-      const linkEl = cells[1]?.querySelector('a');
-      const action = cells[2]?.textContent.trim() || '_self';
-      const btnStyle = cells[3]?.textContent.trim() || 'primary';
+    btns.forEach(({
+      label, link, action, style,
+    }) => {
+      const text = label?.textContent.trim() || '';
+      const linkEl = link?.querySelector('a');
       if (!text && !linkEl) return;
 
       const btnWrap = document.createElement('div');
@@ -201,9 +217,10 @@ export default function decorate(block) {
 
       const a = document.createElement('a');
       a.href = linkEl?.href || linkEl?.getAttribute('href') || '#';
+      const btnStyle = style?.textContent.trim() || 'primary';
       a.className = `btn btn-${btnStyle}`;
       a.textContent = text || linkEl?.textContent.trim() || '';
-      if (action === '_blank') {
+      if (action?.textContent.trim() === '_blank') {
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
       }

@@ -795,29 +795,24 @@
         "name": "id",
         "label": "ID",
         "value": ""
-      }
-    ]
-  },
-  {
-    "id": "hero-banner-button",
-    "fields": [
+      },
       {
         "component": "text",
         "valueType": "string",
-        "name": "text",
-        "label": "Button Label",
+        "name": "button1Label",
+        "label": "Button 1 Label",
         "value": ""
       },
       {
         "component": "aem-content",
         "valueType": "string",
-        "name": "link",
-        "label": "Destination / URL"
+        "name": "button1Link",
+        "label": "Button 1 Link"
       },
       {
         "component": "select",
-        "name": "action",
-        "label": "Open In",
+        "name": "button1Action",
+        "label": "Button 1 Action",
         "valueType": "string",
         "value": "_self",
         "options": [
@@ -833,10 +828,57 @@
       },
       {
         "component": "select",
-        "name": "buttonStyle",
-        "label": "Button Style",
+        "name": "button1Style",
+        "label": "Button 1 Style",
         "valueType": "string",
         "value": "primary",
+        "options": [
+          {
+            "name": "Primary (Dark)",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary (Outline)",
+            "value": "secondary"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "button2Label",
+        "label": "Button 2 Label",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "button2Link",
+        "label": "Button 2 Link"
+      },
+      {
+        "component": "select",
+        "name": "button2Action",
+        "label": "Button 2 Action",
+        "valueType": "string",
+        "value": "_self",
+        "options": [
+          {
+            "name": "Same Tab",
+            "value": "_self"
+          },
+          {
+            "name": "New Tab",
+            "value": "_blank"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "button2Style",
+        "label": "Button 2 Style",
+        "valueType": "string",
+        "value": "secondary",
         "options": [
           {
             "name": "Primary (Dark)",

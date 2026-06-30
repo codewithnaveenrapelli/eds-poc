@@ -320,23 +320,7 @@
                 "template": {
                   "name": "Hero",
                   "model": "hero-banner",
-                  "filter": "hero-banner",
                   "key-value": true
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Hero Button",
-          "id": "hero-banner-button",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Hero Button",
-                  "model": "hero-banner-button"
                 }
               }
             }
