@@ -201,10 +201,20 @@
   border: 0;
   cursor: pointer;
   text-align: center;
+  text-transform: capitalize;
   width: 100%;
   background-color: #001489;
   color: #fff;
   box-shadow: -5px 5px 14px 0 rgb(0 0 0 / 5%), 2px 2px 5px 0 rgb(0 0 0 / 10%);
+}
+
+.hero .hero-extras .btn:focus {
+  box-shadow: none;
+}
+
+.hero .hero-extras .btn:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
 }
 
 .hero .hero-extras .btn-primary {
@@ -214,6 +224,11 @@
 
 .hero .hero-extras .btn-primary:hover {
   background-color: #000e5e;
+  box-shadow: none;
+}
+
+.hero .hero-extras .btn-primary:active {
+  background-color: #001489;
   box-shadow: none;
 }
 
@@ -228,6 +243,11 @@
   box-shadow: none;
 }
 
+.hero .hero-extras .btn-primary-alt:active {
+  background-color: #ffd100;
+  box-shadow: none;
+}
+
 .hero .hero-extras .btn-secondary {
   background-color: #fff;
   color: #001489;
@@ -239,6 +259,11 @@
   background-color: #001489;
   color: #fff;
   box-shadow: none;
+}
+
+.hero .hero-extras .btn-secondary:active {
+  background-color: #fff;
+  box-shadow: 0 0 0 1px #001489;
 }
 
 /* 4. Overlap section */
