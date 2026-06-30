@@ -870,6 +870,13 @@
         "condition": {
           "mediumOverlappAsset": "enabled"
         }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "id",
+        "label": "ID",
+        "value": ""
       }
     ]
   },
@@ -887,22 +894,39 @@
         "component": "aem-content",
         "valueType": "string",
         "name": "link",
-        "label": "Button Link"
+        "label": "Destination / URL"
       },
       {
         "component": "select",
         "name": "action",
-        "label": "Open In",
+        "label": "Button Action",
         "valueType": "string",
-        "value": "sametab",
+        "value": "_self",
         "options": [
           {
-            "name": "Same Tab",
-            "value": "sametab"
+            "name": "Open link in same tab",
+            "value": "_self"
           },
           {
-            "name": "New Tab",
-            "value": "newtab"
+            "name": "Open link in new tab",
+            "value": "_blank"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "buttonStyle",
+        "label": "Button Style",
+        "valueType": "string",
+        "value": "primary",
+        "options": [
+          {
+            "name": "Primary (Dark)",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary (Outline)",
+            "value": "secondary"
           }
         ]
       }

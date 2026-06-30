@@ -3,7 +3,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 const KNOWN_FIELDS = new Set([
   'size', 'overlappasset', 'layout', 'mediumoverlappasset', 'shortlayout',
   'desktopimage', 'tabletimage', 'mobileimage', 'alt', 'pretitle',
-  'title', 'subtitle', 'description',
+  'title', 'subtitle', 'description', 'id',
   'overlaplogo', 'overlapimage', 'overlapcopy',
   'mediumoverlapimage', 'mediumoverlapcopy',
 ]);
@@ -90,8 +90,6 @@ function getVariantClasses(size, layout, shortLayout, overlappAsset, mediumOverl
 
 export default function decorate(block) {
   const rows = [...block.querySelectorAll(':scope > div')];
-  // eslint-disable-next-line no-console
-  console.log('[hero] rows count:', rows.length, rows.map((r) => `cells:${r.querySelectorAll(':scope > div').length} text:"${r.textContent.trim().slice(0, 60)}"`));
   if (!rows.length) return;
 
   const props = {};
@@ -109,8 +107,6 @@ export default function decorate(block) {
     }
     buttonRows.push(row);
   });
-  // eslint-disable-next-line no-console
-  console.log('[hero] props keys:', Object.keys(props), '| buttonRows:', buttonRows.length);
 
   const size = props.size?.textContent.trim() || 'tall';
   const layout = props.layout?.textContent.trim() || '';
@@ -119,6 +115,7 @@ export default function decorate(block) {
   const mediumOverlappAsset = props.mediumoverlappasset?.textContent.trim() || 'disabled';
   const alt = props.alt?.textContent.trim() || '';
   const pretitle = props.pretitle?.textContent.trim() || '';
+  const blockId = props.id?.textContent.trim() || '';
 
   const hasOverlap = size === 'tall' && overlappAsset === 'enabled';
   const hasMediumOverlap = size === 'medium'
@@ -133,11 +130,11 @@ export default function decorate(block) {
 
   block.innerHTML = '';
 
-  const inner = document.createElement('div');
-  const oa = overlappAsset;
-  const moa = mediumOverlappAsset;
-  const variantClasses = getVariantClasses(size, layout, shortLayout, oa, moa);
-  inner.classList.add(...variantClasses);
+  // Variant classes go on block itself (matches AEM where variants are on the root element)
+  // eslint-disable-next-line max-len
+  const variantClasses = getVariantClasses(size, layout, shortLayout, overlappAsset, mediumOverlappAsset);
+  block.classList.add(...variantClasses);
+  if (blockId) block.id = blockId;
 
   if (picture && !isImageCircle) {
     const media = document.createElement('div');
@@ -146,7 +143,7 @@ export default function decorate(block) {
     imgWrap.className = 'hero-image';
     imgWrap.append(picture);
     media.append(imgWrap);
-    inner.append(media);
+    block.append(media);
   }
 
   const section = document.createElement('section');
@@ -197,7 +194,8 @@ export default function decorate(block) {
       const cells = [...btnRow.querySelectorAll(':scope > div')];
       const text = cells[0]?.textContent.trim() || '';
       const linkEl = cells[1]?.querySelector('a');
-      const action = cells[2]?.textContent.trim() || 'sametab';
+      const action = cells[2]?.textContent.trim() || '_self';
+      const buttonType = cells[3]?.textContent.trim() || 'primary';
       if (!text && !linkEl) return;
 
       const btnWrap = document.createElement('div');
@@ -206,9 +204,9 @@ export default function decorate(block) {
 
       const a = document.createElement('a');
       a.href = linkEl?.href || linkEl?.getAttribute('href') || '#';
-      a.className = 'btn';
+      a.className = `btn btn-${buttonType}`;
       a.textContent = text || linkEl?.textContent.trim() || '';
-      if (action === 'newtab') {
+      if (action === '_blank') {
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
       }
@@ -233,7 +231,7 @@ export default function decorate(block) {
 
   container.append(row);
   section.append(container);
-  inner.append(section);
+  block.append(section);
 
   if (hasOverlap) {
     const overlapSection = document.createElement('section');
@@ -268,7 +266,7 @@ export default function decorate(block) {
     }
 
     overlapSection.append(overlapRow);
-    inner.append(overlapSection);
+    block.append(overlapSection);
   }
 
   if (hasMediumOverlap) {
@@ -296,8 +294,6 @@ export default function decorate(block) {
     }
 
     overlapSection.append(overlapRow);
-    inner.append(overlapSection);
+    block.append(overlapSection);
   }
-
-  block.append(inner);
 }
