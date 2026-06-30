@@ -7,8 +7,14 @@
 //         all element-grouped into one cell, rendered in DOM order).
 
 export default function decorate(block) {
-  const [imageRow, contentRow] = [...block.querySelectorAll(':scope > div')];
+  const rows = [...block.querySelectorAll(':scope > div')];
+  // eslint-disable-next-line no-console
+  console.log('[adc-hero-banner] rows:', rows.length, rows.map((r, i) => `row${i}: cells=${r.querySelectorAll(':scope > div').length} tags=[${[...r.querySelectorAll(':scope > div')].map((c) => c.firstElementChild?.tagName || 'TEXT').join(',')}]`));
+  const [imageRow, contentRow] = rows;
 
+  const imageCell = imageRow?.firstElementChild;
+  // eslint-disable-next-line no-console
+  console.log('[adc-hero-banner] imageCell firstChild:', imageCell?.firstElementChild?.tagName, '| contentRow exists:', !!contentRow, '| contentCell children tags:', [...(contentRow?.firstElementChild?.children || [])].map((c) => c.tagName).join(','));
   const picture = imageRow?.querySelector('picture');
   const contentCell = contentRow?.firstElementChild;
 
