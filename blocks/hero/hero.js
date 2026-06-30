@@ -90,6 +90,8 @@ function getVariantClasses(size, layout, shortLayout, overlappAsset, mediumOverl
 
 export default function decorate(block) {
   const rows = [...block.querySelectorAll(':scope > div')];
+  // eslint-disable-next-line no-console
+  console.log('[hero] rows count:', rows.length, rows.map((r) => `cells:${r.querySelectorAll(':scope > div').length} text:"${r.textContent.trim().slice(0, 60)}"`));
   if (!rows.length) return;
 
   const props = {};
@@ -107,6 +109,8 @@ export default function decorate(block) {
     }
     buttonRows.push(row);
   });
+  // eslint-disable-next-line no-console
+  console.log('[hero] props keys:', Object.keys(props), '| buttonRows:', buttonRows.length);
 
   const size = props.size?.textContent.trim() || 'tall';
   const layout = props.layout?.textContent.trim() || '';
