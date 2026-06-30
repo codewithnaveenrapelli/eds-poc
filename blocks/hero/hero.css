@@ -603,18 +603,24 @@
   margin-top: 16px;
 }
 
+/* Circle media column — not .hero-media so base absolute rules don't apply */
 .hero.hero-medium.hero-image-in-circle .hero-media-circle {
-  right: 0;
-  bottom: -20px;
-  left: 0;
   position: relative;
-  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 20px;
 }
 
 .hero.hero-medium.hero-image-in-circle .hero-media-circle .hero-image {
+  /* Reset base .hero .hero-image absolute positioning */
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  height: auto;
   display: flex;
   align-items: center;
-  position: relative;
   justify-content: center;
 }
 
@@ -658,30 +664,49 @@
     flex-direction: column;
     justify-content: center;
     padding: 40px 40px 40px 0;
-    width: 50%;
+    width: 100%;
+  }
+
+  /* Side-by-side layout: content 50%, circle 50% */
+  .hero.hero-medium.hero-image-in-circle .row {
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+
+  .hero.hero-medium.hero-image-in-circle .hero-column {
+    flex: 0 0 50%;
+    max-width: 50%;
   }
 
   .hero.hero-medium.hero-image-in-circle .hero-media-circle {
-    position: absolute;
-    height: 100%;
+    flex: 0 0 50%;
     width: 50%;
-    right: 0;
-    left: auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: visible;
+    padding: 0;
   }
 
   .hero.hero-medium.hero-image-in-circle .hero-media-circle .hero-image {
-    position: absolute;
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    height: auto;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
   }
 
   .hero.hero-medium.hero-image-in-circle .hero-media-circle img {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 0;
-    border-radius: 100%;
-    left: 100%;
     width: 720px;
     height: 720px;
+    border-radius: 100%;
+    object-fit: cover;
+    position: relative;
+    flex-shrink: 0;
+    margin-left: calc(100% - 360px); /* center of circle at right edge of column */
   }
 
   .hero.hero-medium.hero-image-in-circle .hero-section-overlap {

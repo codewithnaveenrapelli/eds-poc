@@ -235,7 +235,7 @@ export default function decorate(block) {
 
   if (isImageCircle && picture) {
     const mediaCol = document.createElement('div');
-    mediaCol.className = 'hero-media hero-media-circle';
+    mediaCol.className = 'hero-media-circle';
     const imgWrap = document.createElement('div');
     imgWrap.className = 'hero-image';
     imgWrap.append(picture);
