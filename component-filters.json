@@ -23,7 +23,8 @@
       "adc-card-carousel",
       "adc-video-playlist",
       "adc-cards",
-      "adc-image"
+      "adc-image",
+      "adc-button"
     ]
   },
   {

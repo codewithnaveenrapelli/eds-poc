@@ -112,6 +112,7 @@
 
 @media (width >= 992px) {
   .hero .hero-media {
+    width: 100%;
     height: 100%;
     position: absolute;
     left: 0;
@@ -179,28 +180,59 @@
 }
 
 .hero .hero-extras .button {
-  max-width: 50%;
-}
-
-.hero .hero-extras > .button:only-child {
-  max-width: 100%;
+  flex: 1 1 auto;
+  min-width: min-content;
+  display: flex;
+  height: fit-content;
 }
 
 .hero .hero-extras .btn {
-  width: 100%;
   text-decoration: none;
   display: inline-block;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
-  border-radius: 4px;
-  background-color: #1a1a1a;
-  color: #fff;
+  border-radius: 8px;
+  border: 0;
   cursor: pointer;
   text-align: center;
+  width: 100%;
+  background-color: #001489;
+  color: #fff;
+  box-shadow: -5px 5px 14px 0 rgb(0 0 0 / 5%), 2px 2px 5px 0 rgb(0 0 0 / 10%);
 }
 
-.hero .hero-extras .btn:hover {
-  opacity: 0.88;
+.hero .hero-extras .btn-primary {
+  background-color: #001489;
+  color: #fff;
+}
+
+.hero .hero-extras .btn-primary:hover {
+  background-color: #000e5e;
+  box-shadow: none;
+}
+
+.hero .hero-extras .btn-primary-alt {
+  background-color: #ffd100;
+  color: #001489;
+  box-shadow: 0 0 0 1px #000;
+}
+
+.hero .hero-extras .btn-primary-alt:hover {
+  background-color: #eeb33b;
+  box-shadow: none;
+}
+
+.hero .hero-extras .btn-secondary {
+  background-color: #fff;
+  color: #001489;
+  border: 1px solid #001489;
+  box-shadow: 0 0 0 1px #000;
+}
+
+.hero .hero-extras .btn-secondary:hover {
+  background-color: #001489;
+  color: #fff;
+  box-shadow: none;
 }
 
 /* 4. Overlap section */
