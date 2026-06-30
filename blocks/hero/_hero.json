@@ -39,6 +39,7 @@
           "label": "Overlapping Assets",
           "valueType": "string",
           "value": "enabled",
+          "condition": { "==": [{ "var": "size" }, "tall"] },
           "options": [
             { "name": "Enabled", "value": "enabled" },
             { "name": "Disabled", "value": "disabled" }
@@ -50,6 +51,7 @@
           "label": "Medium Layout",
           "valueType": "string",
           "value": "circlecopy",
+          "condition": { "==": [{ "var": "size" }, "medium"] },
           "options": [
             { "name": "Circle Copy", "value": "circlecopy" },
             { "name": "Grey Background Image Circle", "value": "greybackgroundimagecircle" },
@@ -62,6 +64,7 @@
           "label": "Overlapping Assets (Medium)",
           "valueType": "string",
           "value": "disabled",
+          "condition": { "and": [{ "==": [{ "var": "size" }, "medium"] }, { "==": [{ "var": "layout" }, "greybackgroundimagecircle"] }] },
           "options": [
             { "name": "Enabled", "value": "enabled" },
             { "name": "Disabled", "value": "disabled" }
@@ -73,6 +76,7 @@
           "label": "Short Layout",
           "valueType": "string",
           "value": "yellowgradientbackground",
+          "condition": { "==": [{ "var": "size" }, "short"] },
           "options": [
             { "name": "Yellow Gradient Background", "value": "yellowgradientbackground" },
             { "name": "Grey Background", "value": "greybackground" }
@@ -139,35 +143,40 @@
           "valueType": "string",
           "name": "overlapLogo",
           "label": "Overlap Logo",
-          "multi": false
+          "multi": false,
+          "condition": { "==": [{ "var": "overlappAsset" }, "enabled"] }
         },
         {
           "component": "reference",
           "valueType": "string",
           "name": "overlapImage",
           "label": "Overlap Image",
-          "multi": false
+          "multi": false,
+          "condition": { "==": [{ "var": "overlappAsset" }, "enabled"] }
         },
         {
           "component": "richtext",
           "name": "overlapCopy",
           "label": "Overlap Copy",
           "valueType": "string",
-          "value": ""
+          "value": "",
+          "condition": { "==": [{ "var": "overlappAsset" }, "enabled"] }
         },
         {
           "component": "reference",
           "valueType": "string",
           "name": "mediumOverlapImage",
           "label": "Medium Overlap Image",
-          "multi": false
+          "multi": false,
+          "condition": { "==": [{ "var": "mediumOverlappAsset" }, "enabled"] }
         },
         {
           "component": "richtext",
           "name": "mediumOverlapCopy",
           "label": "Medium Overlap Copy",
           "valueType": "string",
-          "value": ""
+          "value": "",
+          "condition": { "==": [{ "var": "mediumOverlappAsset" }, "enabled"] }
         },
         {
           "component": "text",
