@@ -1,5 +1,3 @@
-import { moveInstrumentation } from '../../scripts/scripts.js';
-
 const KNOWN_FIELDS = new Set([
   'size', 'overlappasset', 'layout', 'mediumoverlappasset', 'shortlayout',
   'desktopimage', 'tabletimage', 'mobileimage', 'alt', 'pretitle',
@@ -89,16 +87,16 @@ function getVariantClasses(size, layout, shortLayout, overlappAsset, mediumOverl
 }
 
 export default function decorate(block) {
-  const rows = [...block.querySelectorAll(':scope > div')];
-  if (!rows.length) return;
+  const allRows = [...block.querySelectorAll(':scope > div')];
+  if (!allRows.length) return;
 
   const props = {};
   const buttonRows = [];
 
-  rows.forEach((row) => {
-    const cells = [...row.querySelectorAll(':scope > div')];
-    if (cells.length === 2) {
-      const [keyCell, valCell] = cells;
+  allRows.forEach((row) => {
+    const rowCells = [...row.querySelectorAll(':scope > div')];
+    if (rowCells.length === 2) {
+      const [keyCell, valCell] = rowCells;
       const key = keyCell.textContent.trim().toLowerCase().replace(/[\s-]/g, '');
       if (KNOWN_FIELDS.has(key)) {
         props[key] = valCell;
@@ -195,16 +193,15 @@ export default function decorate(block) {
       const text = cells[0]?.textContent.trim() || '';
       const linkEl = cells[1]?.querySelector('a');
       const action = cells[2]?.textContent.trim() || '_self';
-      const buttonType = cells[3]?.textContent.trim() || 'primary';
+      const btnStyle = cells[3]?.textContent.trim() || 'primary';
       if (!text && !linkEl) return;
 
       const btnWrap = document.createElement('div');
       btnWrap.className = 'button';
-      moveInstrumentation(btnRow, btnWrap);
 
       const a = document.createElement('a');
       a.href = linkEl?.href || linkEl?.getAttribute('href') || '#';
-      a.className = `btn btn-${buttonType}`;
+      a.className = `btn btn-${btnStyle}`;
       a.textContent = text || linkEl?.textContent.trim() || '';
       if (action === '_blank') {
         a.target = '_blank';

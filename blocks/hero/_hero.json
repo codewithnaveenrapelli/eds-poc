@@ -1,7 +1,7 @@
 {
   "definitions": [
     {
-      "title": "ADC Hero Banner",
+      "title": "Hero Banner",
       "id": "hero-banner",
       "plugins": {
         "xwalk": {
@@ -18,14 +18,14 @@
       }
     },
     {
-      "title": "ADC Hero Button",
+      "title": "Hero Button",
       "id": "hero-banner-button",
       "plugins": {
         "xwalk": {
           "page": {
             "resourceType": "core/franklin/components/block/v1/block/item",
             "template": {
-              "name": "ADC Hero Button",
+              "name": "Hero Button",
               "model": "hero-banner-button"
             }
           }
@@ -210,7 +210,7 @@
           "component": "text",
           "valueType": "string",
           "name": "text",
-          "label": "Button Text",
+          "label": "Button Label",
           "value": ""
         },
         {
@@ -222,12 +222,12 @@
         {
           "component": "select",
           "name": "action",
-          "label": "Button Action",
+          "label": "Open In",
           "valueType": "string",
           "value": "_self",
           "options": [
-            { "name": "Open link in same tab", "value": "_self" },
-            { "name": "Open link in new tab", "value": "_blank" }
+            { "name": "Same Tab", "value": "_self" },
+            { "name": "New Tab", "value": "_blank" }
           ]
         },
         {
