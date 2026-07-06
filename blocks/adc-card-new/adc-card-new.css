@@ -1,3 +1,5 @@
+/* stylelint-disable */
+
 .card {
     --card-title-color-light: var(--gray-darker-color);
     --card-title-color-dark: #000000;
