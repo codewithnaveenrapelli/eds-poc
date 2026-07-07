@@ -28,20 +28,6 @@
           "multi": false
         },
         {
-          "component": "reference",
-          "valueType": "string",
-          "name": "tabletImage",
-          "label": "Tablet image",
-          "multi": false
-        },
-        {
-          "component": "reference",
-          "valueType": "string",
-          "name": "mobileImage",
-          "label": "Mobile image",
-          "multi": false
-        },
-        {
           "component": "text",
           "valueType": "string",
           "name": "alt",
@@ -49,70 +35,10 @@
           "value": ""
         },
         {
-          "component": "select",
-          "valueType": "string",
-          "name": "isDecorative",
-          "label": "Image is decorative",
-          "value": "false",
-          "options": [
-            { "name": "No", "value": "false" },
-            { "name": "Yes", "value": "true" }
-          ]
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "jcr:title",
-          "label": "Caption",
-          "value": ""
-        },
-        {
-          "component": "select",
-          "valueType": "string",
-          "name": "displayPopupTitle",
-          "label": "Display caption as pop-up",
-          "value": "false",
-          "options": [
-            { "name": "No", "value": "false" },
-            { "name": "Yes", "value": "true" }
-          ]
-        },
-        {
           "component": "aem-content",
           "valueType": "string",
           "name": "link",
           "label": "Link"
-        },
-        {
-          "component": "select",
-          "valueType": "string",
-          "name": "linkTarget",
-          "label": "Link Target",
-          "value": "_self",
-          "options": [
-            { "name": "Same Tab", "value": "_self" },
-            { "name": "New Tab", "value": "_blank" },
-            { "name": "Parent Frame", "value": "_parent" },
-            { "name": "Full Window Body", "value": "_top" }
-          ]
-        },
-        {
-          "component": "select",
-          "valueType": "string",
-          "name": "displayOriginalImage",
-          "label": "Display image in original aspect ratio",
-          "value": "false",
-          "options": [
-            { "name": "No", "value": "false" },
-            { "name": "Yes", "value": "true" }
-          ]
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "id",
-          "label": "ID",
-          "value": ""
         },
         {
           "component": "text",

@@ -29,7 +29,7 @@
         },
         {
           "component": "text",
-          "name": "logoAltText",
+          "name": "alt",
           "label": "Logo Alt Text",
           "valueType": "string",
           "value": ""
@@ -64,30 +64,6 @@
               "value": "_top"
             }
           ]
-        },
-        {
-          "component": "select",
-          "name": "external",
-          "label": "External Link",
-          "valueType": "string",
-          "value": "false",
-          "options": [
-            {
-              "name": "No",
-              "value": "false"
-            },
-            {
-              "name": "Yes",
-              "value": "true"
-            }
-          ]
-        },
-        {
-          "component": "text",
-          "name": "id",
-          "label": "ID",
-          "valueType": "string",
-          "value": ""
         }
       ]
     }
