@@ -24,7 +24,8 @@
       "adc-video-playlist",
       "adc-cards",
       "adc-image",
-      "adc-button"
+      "adc-button",
+      "adc-inlinetext"
     ]
   },
   {

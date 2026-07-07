@@ -1003,5 +1003,18 @@
         ]
       }
     ]
+  },
+  {
+    "id": "adc-inlinetext",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "title",
+        "label": "Description",
+        "description": "Enter the inline text/description to display. Supports rich text formatting (bold, italic, underline, superscript, headings h1–h6, and links).",
+        "value": ""
+      }
+    ]
   }
 ]
