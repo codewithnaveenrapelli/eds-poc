@@ -159,21 +159,6 @@
           }
         },
         {
-          "title": "ADC Card New",
-          "id": "adc-card-new",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "ADC Card New",
-                  "model": "adc-card-new"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "ADC Cards",
           "id": "adc-cards",
           "plugins": {
