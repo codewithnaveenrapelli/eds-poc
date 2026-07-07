@@ -68,12 +68,5 @@
       ]
     }
   ],
-  "filters": [
-    {
-      "id": "section",
-      "components": [
-        "adc-logo"
-      ]
-    }
-  ]
+  "filters": []
 }

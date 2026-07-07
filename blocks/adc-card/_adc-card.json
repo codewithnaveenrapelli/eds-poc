@@ -61,12 +61,6 @@
   ],
   "filters": [
     {
-      "id": "section",
-      "components": [
-        "adc-card"
-      ]
-    },
-    {
       "id": "adc-card",
       "components": [
         "adc-image",

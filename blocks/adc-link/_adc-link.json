@@ -57,12 +57,5 @@
       ]
     }
   ],
-  "filters": [
-    {
-      "id": "section",
-      "components": [
-        "adc-link"
-      ]
-    }
-  ]
+  "filters": []
 }

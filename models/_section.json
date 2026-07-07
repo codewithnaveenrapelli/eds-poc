@@ -58,7 +58,11 @@
         "adc-card-carousel",
         "adc-video-playlist",
         "adc-cards",
+        "adc-card",
         "adc-image",
+        "adc-inline-text-title",
+        "adc-link",
+        "adc-logo",
         "adc-button"
       ]
     }
