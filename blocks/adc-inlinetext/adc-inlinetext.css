@@ -41,10 +41,8 @@
   font-size: var(--body-font-size-m, 1rem);
   line-height: var(--body-line-height, 1.6);
   color: var(--text-color, #131313);
-  word-break: break-word;
+  overflow-wrap: break-word;
   hyphens: manual;
-  -webkit-hyphens: manual;
-  -moz-hyphens: manual;
 }
 
 /* -------------------------------------------------------------------------
