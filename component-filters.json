@@ -24,8 +24,7 @@
       "adc-video-playlist",
       "adc-cards",
       "adc-image",
-      "adc-button",
-      "adc-inlinetext"
+      "adc-button"
     ]
   },
   {
@@ -41,9 +40,49 @@
     ]
   },
   {
+    "id": "section",
+    "components": [
+      "adc-card"
+    ]
+  },
+  {
+    "id": "adc-card",
+    "components": [
+      "adc-image",
+      "adc-logo",
+      "adc-inline-text-title",
+      "adc-link",
+      "text"
+    ]
+  },
+  {
     "id": "adc-cards",
     "components": [
       "adc-card-item"
+    ]
+  },
+  {
+    "id": "section",
+    "components": [
+      "adc-image"
+    ]
+  },
+  {
+    "id": "section",
+    "components": [
+      "adc-inline-text-title"
+    ]
+  },
+  {
+    "id": "section",
+    "components": [
+      "adc-link"
+    ]
+  },
+  {
+    "id": "section",
+    "components": [
+      "adc-logo"
     ]
   },
   {

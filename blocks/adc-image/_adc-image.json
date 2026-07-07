@@ -23,45 +23,113 @@
         {
           "component": "reference",
           "valueType": "string",
-          "name": "image",
-          "label": "Image",
+          "name": "fileReference",
+          "label": "Desktop image",
+          "multi": false
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "tabletImage",
+          "label": "Tablet image",
+          "multi": false
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "mobileImage",
+          "label": "Mobile image",
           "multi": false
         },
         {
           "component": "text",
           "valueType": "string",
-          "name": "imageAlt",
-          "label": "Alt Text",
-          "value": ""
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "caption",
-          "label": "Caption (optional)",
-          "value": ""
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "linkUrl",
-          "label": "Link URL (optional)",
+          "name": "alt",
+          "label": "Alternative text for accessibility.",
           "value": ""
         },
         {
           "component": "select",
           "valueType": "string",
-          "name": "size",
-          "label": "Display Size",
+          "name": "isDecorative",
+          "label": "Image is decorative",
+          "value": "false",
           "options": [
-            { "name": "Full Width", "value": "full" },
-            { "name": "Large (75%)", "value": "large" },
-            { "name": "Medium (50%)", "value": "medium" },
-            { "name": "Small (25%)", "value": "small" }
+            { "name": "No", "value": "false" },
+            { "name": "Yes", "value": "true" }
           ]
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "jcr:title",
+          "label": "Caption",
+          "value": ""
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "displayPopupTitle",
+          "label": "Display caption as pop-up",
+          "value": "false",
+          "options": [
+            { "name": "No", "value": "false" },
+            { "name": "Yes", "value": "true" }
+          ]
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Link"
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "linkTarget",
+          "label": "Link Target",
+          "value": "_self",
+          "options": [
+            { "name": "Same Tab", "value": "_self" },
+            { "name": "New Tab", "value": "_blank" },
+            { "name": "Parent Frame", "value": "_parent" },
+            { "name": "Full Window Body", "value": "_top" }
+          ]
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "displayOriginalImage",
+          "label": "Display image in original aspect ratio",
+          "value": "false",
+          "options": [
+            { "name": "No", "value": "false" },
+            { "name": "Yes", "value": "true" }
+          ]
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "id",
+          "label": "ID",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "className",
+          "label": "Class Name",
+          "value": ""
         }
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "section",
+      "components": [
+        "adc-image"
+      ]
+    }
+  ]
 }
